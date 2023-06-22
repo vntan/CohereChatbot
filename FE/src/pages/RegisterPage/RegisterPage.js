@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './RegisterPage.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { auth, registerWithEmailAndPassword } from '../../utilities/firebase'
+import { registerWithEmailAndPassword } from '../../utilities/firebase'
 import {Link} from "react-router-dom";
 
 export default function RegisterPage() {
@@ -129,7 +129,7 @@ export default function RegisterPage() {
 
           </div>
 
-          <div className='signin'>You already have an account? <Link to="/register">Join Now</Link> </div>
+          <div className='signin'>You already have an account? <Link to="/login">Join Now</Link> </div>
 
         </div>
       </div>

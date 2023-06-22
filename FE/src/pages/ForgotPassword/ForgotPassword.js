@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import './ForgotPassword.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { auth, sendPasswordReset } from '../../utilities/firebase'
+import { sendPasswordReset } from '../../utilities/firebase'
 import {Link} from "react-router-dom";
 
 export default function ForgotPassword(){
 
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [error, setError] = useState('');
 
     const resetPasswordwithEmail = async (e) => {
         e.preventDefault();
-        if (username.length === 0) {
+        if (email.length === 0) {
           setError('Please fill your email');
           return;
         }
@@ -20,13 +20,13 @@ export default function ForgotPassword(){
           '^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$'
         );
 
-        if (!validEmail.exec(username)) {
+        if (!validEmail.exec(email)) {
           setError('Please check your email address!');
           return;
         }
 
-        const reset = await sendPasswordReset(auth, username);
-        if (reset == null) {
+        const reset = await sendPasswordReset(email);
+        if (reset === null) {
           setError("Reset Password Failed!");
           return;
         }
@@ -62,10 +62,10 @@ export default function ForgotPassword(){
                 <div>
                   <label for="txtEmail">Email</label>
                   <input type="text" className="form-control no-border" id="txtEmail"
-                    placeholder="Email" value={username}
+                    placeholder="Email" value={email}
                     onChange={
                       (e) => {
-                        setUsername(e.target.value);
+                        setEmail(e.target.value);
                         setError('')
                       }
                     } />

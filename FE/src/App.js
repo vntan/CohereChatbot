@@ -13,7 +13,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 function App() {
 
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
 
   const router = createBrowserRouter([
     {
