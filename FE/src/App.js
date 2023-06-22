@@ -1,6 +1,8 @@
 import './App.css';
 import MainPage  from "./pages/MainPage/MainPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
+import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
+import RegisterPage from './pages/RegisterPage/RegisterPage';
 import {
   createBrowserRouter,
   RouterProvider,
@@ -25,6 +27,22 @@ function App() {
     {
       path: "login",
       element: <LoginPage/>,
+      loader: async () => {
+        if (!loading && user) throw redirect("/", { replace: true });
+        return {}
+      }
+    },
+    {
+      path: "forgetpassword",
+      element: <ForgotPassword/>,
+      loader: async () => {
+        if (!loading && user) throw redirect("/", { replace: true });
+        return {}
+      }
+    },
+    {
+      path: "register",
+      element: <RegisterPage/>,
       loader: async () => {
         if (!loading && user) throw redirect("/", { replace: true });
         return {}

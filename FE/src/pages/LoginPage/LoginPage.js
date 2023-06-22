@@ -68,7 +68,7 @@ export default function LoginPage() {
             <h2>LOGIN</h2>
 
             {
-              error.length != 0 &&
+              error.length !== 0 &&
               <div class="alert alert-danger " role="alert">
                 {error}
               </div>
