@@ -5,7 +5,7 @@ import firebase_admin
 from firebase_admin import auth
 from firebase_admin import db
 
-cred_obj = firebase_admin.credentials.Certificate('.\coherechatbot-firebase-adminsdk-gvs9z-47e07e3a84.json')
+cred_obj = firebase_admin.credentials.Certificate('./coherechatbot.json')
 default_app = firebase_admin.initialize_app(cred_obj, {
 	'databaseURL':'https://coherechatbot-default-rtdb.asia-southeast1.firebasedatabase.app/'
 	})
@@ -98,7 +98,7 @@ cohere_bot = CoHere(api_key)
 app = Flask(__name__)  
 
 '''
-/init
+get_chats
 Dùng để lấy thông tin người dùng khi người dùng đăng nhập thành công (tất cả các đoạn chat)
 Dữ liệu json cần truyền:
 {
@@ -109,7 +109,7 @@ Mã trả về:
 * 204: Tìm thấy user id nhưng không có đoạn chat nào được ghi nhận
 * 404: Không tim thấy user id  
 '''
-@app.get('/init')
+@app.get('/get_chats')
 def get_information():
     json_dict = request.get_json()
     uid = json_dict['uid']

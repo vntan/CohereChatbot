@@ -4,8 +4,8 @@ Here is BE folder
 
 # Các api có thể gọi  
 
-### 1. /init
-Dùng để lấy thông tin người dùng khi người dùng đăng nhập thành công (tất cả các đoạn chat)  
+### 1. /get_chats
+Dùng để lấy tất cả các đoạn chat    
 Dữ liệu json cần truyền: {"uid": "user_id"}  
 Mã trả về:  
 * 200: Thành công lấy về tất cả đoạn chat
