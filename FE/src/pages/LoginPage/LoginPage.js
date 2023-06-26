@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import './LoginPage.css'
+import styles from './LoginPage.module.scss'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { logInWithEmailAndPassword, signInWithGoogle } from '../../utilities/firebase'
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function LoginPage() {
 
@@ -52,32 +52,34 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="container-fluid g-0  background-color d-flex flex-column justify-content-center align-items-center">
+    <div className={`${styles["bg-size"]} ${styles["bg-color"]} container-fluid g-0 d-flex flex-column justify-content-center align-items-center`}>
       <div className="header p-4">
-        <div></div>
-        <h1>Cohere chatbot</h1>
-        <div></div>
+        <div className={`${styles["header-firstChild"]}`}></div>
+        <h1 className={`${styles["header-title"]}`}>Cohere chatbot</h1>
+        <div className={`${styles["header-lastChild"]}`}></div>
       </div>
-      <div className="main-content bg-white row">
-        <div className="icon col-sm-4 d-none d-sm-flex flex-column justify-content-center align-items-center">
-          <img src="./img/icon_chatbot.png" alt="chatbot" />
-        </div>
-        <div className="login_form col-sm-8 d-sm-flex flex-column justify-content-center align-items-center">
 
-          <div className="h-100 w-75 d-flex flex-column justify-content-center">
-            <h2>LOGIN</h2>
+      <div className={`${styles["mainContent"]} bg-white row`}>
+        <div className="col-sm-4 d-none d-sm-flex flex-column justify-content-center align-items-center">
+          <img src="./img/icon_chatbot.png" alt="chatbot" className={styles["mainContent-icon"]} />
+        </div>
+
+        <div className={`${styles["mainContent-loginForm"]} col-sm-8 d-sm-flex flex-column justify-content-center align-items-center`}>
+
+          <div className={`${styles["wrapperForm"]} h-100 w-75 d-flex flex-column justify-content-center`}>
+            <h2 className={`${styles["wrapperForm-title"]}`}>LOGIN</h2>
 
             {
               error.length !== 0 &&
-              <div class="alert alert-danger " role="alert">
+              <div className={`${styles["wrapperForm-alert"]} alert alert-danger`} role="alert">
                 {error}
               </div>
             }
 
-            <form>
+            <form className={`${styles["wrapperForm-form"]} alert-danger`}>
               <div>
                 <label for="txtEmail">Email</label>
-                <input type="text" className="form-control no-border" id="txtEmail"
+                <input type="text" className={`form-control ${styles["form-control"]} no-border`} id="txtEmail"
                   placeholder="Email" value={username}
                   onChange={
                     (e) => {
@@ -89,7 +91,7 @@ export default function LoginPage() {
               </div>
               <div>
                 <label for="txtPassword">Password</label>
-                <input type="password" className="form-control no-border" id="txtPassword"
+                <input type="password" className={`form-control ${styles["form-control"]} no-border`} id="txtPassword"
                   placeholder="Password" value={password}
                   onChange={
                     (e) => {
@@ -97,29 +99,30 @@ export default function LoginPage() {
                       setError('')
                     }
                   } />
-                <div className='forget_password'><Link to="/forgetpassword">* Forget password</Link></div>
+                <div className={`forget_password ${styles["forget_password"]}`}><Link to="/forgetpassword">* Forget password</Link></div>
               </div>
 
               <div className="d-flex flex-column align-items-center justify-content-center" >
-                <button className="btn btn-primary w-100" onClick={handleEmailSignIn}>ENTER</button>
+                <button className={`btn ${styles["btn-primary"]} w-100`}  onClick={handleEmailSignIn}>ENTER</button>
               </div>
             </form>
 
-            <div className='line'>OR</div>
+            <div className={`${styles["line"]}`}>OR</div>
 
 
             <div className="d-flex flex-column align-items-center justify-content-center">
 
-              <button className="btn btn-primary w-100" onClick={handleGoogleSignIn}>
-                <i class="fab fa-google"> </i> SIGN IN WITH GOOGLE
+              <button className={`btn ${styles["btn-primary"]} w-100`} onClick={handleGoogleSignIn}>
+                <i className="fab fa-google"> </i> SIGN IN WITH GOOGLE
 
               </button>
             </div>
 
-            <div className='signup'>You don't have an account? <Link to="/register">Join Now</Link> </div>
+            <div className={`${styles["signup"]}`}>You don't have an account? <Link to="/register">Join Now</Link> </div>
 
           </div>
         </div>
+
       </div>
 
 
