@@ -197,21 +197,11 @@ def process():
 
     global process_queue
 
-    time_flag = time.time()
-    count = 0
-
     while True:
         if task_done: 
             break
 
         if len(process_queue) != 0:
-            if count >= 5:
-                time.sleep(60 - (time.time() - time_flag) + 5)
-
-            if time.time() - time_flag > 65:
-                time_flag = time.time()
-                count = 0
-
             try:
                 id = process_queue[0]
 
@@ -248,10 +238,9 @@ def process():
                 profile_dict[id]['status'] = True
             except Exception as error:
                 print(error)
-                count = 5
+                time.sleep(50)
                 continue
 
-            count += 1
         else:
             time.sleep(1)
 
@@ -260,7 +249,6 @@ def process():
 '''
 Điều chỉnh biến system_status:
 "free": hàm check_wait_list sẽ lần lượt xem xét và đưa user vào process_queue
-"normal": đang xử lí khối lượng công việc lớn --> check_waiting_list sẽ không thêm bất kì thứ gì
 "overload": server quá tải
 '''
 def set_system_status():
@@ -268,20 +256,17 @@ def set_system_status():
 
     global process_queue
 
-    if system_status == 'overload':
-        return
-
     if len(process_queue) <= 5:
         system_status = 'free'
 
-    if len(process_queue) > 5 and len(process_queue) <= 15:
-        system_status = 'normal'
+    if system_status == 'overload':
+        return
 
 '''
 Việc chọn tác vụ sẽ phụ thuộc vào biến system_status và
 tổng user trong wait_list và process_queue
 '''
-def check_waiting_list():
+def check_waiting_list(sleep_time):
     global task_done
 
     global system_status
@@ -293,7 +278,7 @@ def check_waiting_list():
         if task_done: 
             break
 
-        time.sleep(1)
+        time.sleep(sleep_time)
         set_system_status()
 
         if system_status == 'overload':
@@ -598,7 +583,7 @@ def detele_chat():
 
 if __name__ == '__main__':
     q = Queue()
-    t = Thread(target=check_waiting_list)
+    t = Thread(target=check_waiting_list, args=(1,))
     c = Thread(target=cleaner)
     p = Thread(target=process)
     t.start()
