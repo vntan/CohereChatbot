@@ -170,14 +170,14 @@ def get_process_2(wait_list):
         process_queue.append(uid)
         waiting_list.remove(uid)
 
-def get_process_3(wait_list):
+def get_process_3(wait_list, max_users):
     global system_status
 
     global process_queue
 
     new_wait_list = sort_users(wait_list)
 
-    num_user_accepted = 15 - len(process_queue)
+    num_user_accepted = max_users - len(process_queue)
 
     for _ in range(num_user_accepted):
         uid = new_wait_list.pop(0)
@@ -259,14 +259,11 @@ def set_system_status():
     if len(process_queue) <= 5:
         system_status = 'free'
 
-    if system_status == 'overload':
-        return
-
 '''
 Việc chọn tác vụ sẽ phụ thuộc vào biến system_status và
 tổng user trong wait_list và process_queue
 '''
-def check_waiting_list(sleep_time):
+def check_waiting_list(sleep_time, max_users):
     global task_done
 
     global system_status
@@ -285,9 +282,6 @@ def check_waiting_list(sleep_time):
             process_overload()
             continue
 
-        if system_status == 'normal':
-            continue
-
         wait_list = waiting_list.copy()
 
         if len(wait_list) == 0:
@@ -295,10 +289,10 @@ def check_waiting_list(sleep_time):
 
         if len(wait_list) + len(process_queue) < 3:
             get_process_1(wait_list)
-        elif len(wait_list) + len(process_queue) <= 15:
+        elif len(wait_list) + len(process_queue) <= max_users:
             get_process_2(wait_list)
-        elif len(wait_list) + len(process_queue) > 15:
-            get_process_3(wait_list)
+        elif len(wait_list) + len(process_queue) > max_users:
+            get_process_3(wait_list, max_users)
 
     print("Terminate check waiting list")
     
@@ -583,7 +577,7 @@ def detele_chat():
 
 if __name__ == '__main__':
     q = Queue()
-    t = Thread(target=check_waiting_list, args=(1,))
+    t = Thread(target=check_waiting_list, args=(1,15))
     c = Thread(target=cleaner)
     p = Thread(target=process)
     t.start()
