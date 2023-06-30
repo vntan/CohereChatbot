@@ -3,6 +3,7 @@ import MainPage  from "./pages/MainPage/MainPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
+
 import {
   createBrowserRouter,
   RouterProvider,
@@ -43,6 +44,14 @@ function App() {
     {
       path: "register",
       element: <RegisterPage/>,
+      loader: async () => {
+        if (!loading && user) throw redirect("/", { replace: true });
+        return {}
+      }
+    },
+    {
+      path: "mainpage",
+      element: <MainPage/>,
       loader: async () => {
         if (!loading && user) throw redirect("/", { replace: true });
         return {}

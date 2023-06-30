@@ -53,7 +53,7 @@ export default function LoginPage() {
 
   return (
     <div className={`${styles["bg-size"]} ${styles["bg-color"]} container-fluid g-0 d-flex flex-column justify-content-center align-items-center`}>
-      <div className="header p-4">
+      <div className={`${styles["header"]} p-4`}>
         <div className={`${styles["header-firstChild"]}`}></div>
         <h1 className={`${styles["header-title"]}`}>Cohere chatbot</h1>
         <div className={`${styles["header-lastChild"]}`}></div>
