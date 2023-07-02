@@ -35,237 +35,242 @@ export default function MainPageDesktop() {
     return (
         <div class="container-fluid">
             <div class={`${styles["main-content"]} row`}>
-                <div class={`${styles["control-panel"]} ${styles["control-panel--rounded"]} g-0 col-sm-4 col-lg-3 d-none d-sm-flex flex-column`}>
+                <div class={`${styles["control-panel"]} ${styles["control-panel--rounded"]} g-0 col-sm-4 col-lg-3 d-none d-sm-flex flex-column d-flex justify-content-between`}>
                     <div class={`${styles["user_info"]} d-flex  justify-content-center align-items-center`}>
                         <img src="/img/user.png" alt="Avatar" class={`${styles["avatar"]} col-5 g-0`} />
                         <span class="flex-grow-1">Username</span>
                         <i class="fas fa-cog">
-                            <div className={`${styles["config_popup"]}`}>
+                            <div className={`${styles["config_popup"]} d-none`}>
                                 <div>User Information</div>
                                 <div>Sign Out</div>
                             </div>
                         </i>
-
                     </div>
 
-                    <div class={`${styles["line"]}`}></div>
+                    <div class={`flex-grow-1`}>
+                        <div class={`${styles["line"]}`}></div>
+                        <div class={`${styles["chat_new"]} d-flex align-items-center`}>
+                            <i class="fas fa-plus-circle"></i>
+                            <span>Add new chat</span>
+                        </div>
 
-                    <div class={`${styles["chat_new"]} d-flex align-items-center`}>
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Add new chat</span>
+                        <div class={`${styles["history_panel_title"]}`}>History</div>
+                        {/* <!-- History Panel --> */}
+                        <div class={`${styles["history_panel"]} flex-grow-1`}>
+
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                            <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
+                                <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
+                                <span class="flex-grow-1">Cohere API</span>
+                                <div class="d-none">
+                                    <i class="fas fa-edit me-1"></i>
+                                    <i class="fas fa-trash-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class={`${styles["line"]}`}></div>
                     </div>
 
-                    <div class={`${styles["history_panel_title"]}`}>History</div>
-                    {/* <!-- History Panel --> */}
-                    <div class={`${styles["history_panel"]} flex-grow-1`}>
-
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                        <div class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}>
-                            <img src="img/chat_icon.png" class="me-2" alt='chat_icon'></img>
-                            <span class="flex-grow-1">Cohere API</span>
-                            <div class="d-none">
-                                <i class="fas fa-edit me-1"></i>
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class={`${styles["line"]}`}></div>
                     <div class={`${styles["about_us"]} d-flex align-items-center`} onClick={() => setIsOpen(true)}>
                         <i class="fas fa-info-circle me-2"></i>
                         <span>About us</span>
-
                     </div>
                 </div>
-                <div class={`${styles["chatbot"]} g-0 col-sm-8 col-lg-9 d-flex flex-column align-items-center`}>
+
+                <div class={`${styles["chatbot"]} g-0 col-sm-8 col-lg-9 d-flex flex-column align-items-center justify-content-between`}>
                     <div class={`${styles["title"]} d-flex justify-content-center align-items-center`}>
                         <h1>Cohere Chatbot</h1>
                         <img src="./img/thunder.png" alt="thunder" />
                     </div>
+                    <div className={`${styles["chatbot-dialog-content"]} flex-grow-1 d-flex flex-column align-items-center w-100`}>
 
-                    <div class={`${styles["chatbot-dialog"]} flex-grow-1`}>
-                        <p className={`${styles["chatbot-dialog-titleChat"]}`}>COHERE API</p>
-
-                        <div class={`${styles["chatbot-dialog-listChat"]}`}>
-                            <div>
-                                <img src="./img/bot_chat.png" alt="bot_chat" />
-                                <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
+                        
+                         <div class={`${styles["chatbot-dialog"]} `}>
+                            <div className={`${styles["titleChat"]}`}>
+                                COHERE API
                             </div>
 
-                            <div>
-                                <img src="./img/user.png" alt="bot_chat" />
-                                <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
+                            <div className={`${styles["listChat"]}`}>
+                                <div>
+                                    <img src="./img/bot_chat.png" alt="bot_chat" />
+                                    <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
+                                </div>
+
+                                <div>
+                                    <img src="./img/user.png" alt="bot_chat" />
+                                    <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
+                                </div>
+
+                                <div>
+                                    <img src="./img/bot_chat.png" alt="bot_chat" />
+                                    <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
+                                </div>
+
+                                <div>
+                                    <img src="./img/user.png" alt="bot_chat" />
+                                    <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
+                                </div>
+
+                                <div>
+                                    <img src="./img/bot_chat.png" alt="bot_chat" />
+                                    <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
+                                </div>
+
+                                <div>
+                                    <img src="./img/user.png" alt="bot_chat" />
+                                    <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
+                                </div>
+
+                                <div>
+                                    <img src="./img/bot_chat.png" alt="bot_chat" />
+                                    <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
+                                </div>
+
+                                <div>
+                                    <img src="./img/user.png" alt="bot_chat" />
+                                    <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
+                                </div>
+
                             </div>
 
-                            <div>
-                                <img src="./img/bot_chat.png" alt="bot_chat" />
-                                <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
-                            </div>
-
-                            <div>
-                                <img src="./img/user.png" alt="bot_chat" />
-                                <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
-                            </div>
-
-                            <div>
-                                <img src="./img/bot_chat.png" alt="bot_chat" />
-                                <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
-                            </div>
-
-                            <div>
-                                <img src="./img/user.png" alt="bot_chat" />
-                                <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
-                            </div>
-
-                            <div>
-                                <img src="./img/bot_chat.png" alt="bot_chat" />
-                                <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
-                            </div>
-
-                            <div>
-                                <img src="./img/user.png" alt="bot_chat" />
-                                <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam quis expedita, numquam voluptas cum facere nemo doloribus! Possimus non earum quaerat ratione quasi quis, neque quibusdam quod est, aliquam nostrum?</span>
-                            </div>
 
                         </div>
-
-
                     </div>
 
                     <div class={`${styles["input"]} d-flex  justify-content-center align-items-center`}>

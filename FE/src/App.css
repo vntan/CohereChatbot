@@ -6,3 +6,25 @@ body{
     overflow: hidden;
     overflow-x: visible;
 }
+
+/* width */
+::-webkit-scrollbar,  ::-webkit-scrollbar:horizontal{
+    width: 5px;
+    height: fit-content;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    /* background: #f1f1f1; */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb:horizontal {
+    background: #888;
+    border-radius: 32px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover,  ::-webkit-scrollbar-thumb:horizontal:hover{
+    background: #555;
+}
