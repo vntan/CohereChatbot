@@ -1,4 +1,4 @@
-$main_content_bg_color : linear-gradient(to right, #9900ff, #cc80ff);
+$main_content_bg_color : linear-gradient(109.6deg, rgba(156,252,248,1) 11.2%, rgba(110,123,251,1) 91.1%);
 
 .main-content {
     background: $main_content_bg_color;
@@ -114,33 +114,12 @@ $main_content_bg_color : linear-gradient(to right, #9900ff, #cc80ff);
         }
     }
 
-
-
-
-
-
-
     &>.about_us {
         @extend .user_info;
         cursor: pointer;
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 .chat_item {
@@ -172,8 +151,6 @@ $main_content_bg_color : linear-gradient(to right, #9900ff, #cc80ff);
         display: flex !important;
     }
 }
-
-
 
 
 .chatbot {

@@ -116,8 +116,9 @@ export default function RegisterPage() {
                       }
                   } />
             </div>
-
+            
             <div className="d-flex flex-column align-items-center justify-content-center" >
+              <div></div>
               <button className={`btn ${styles["btn-primary"]} w-100`} onClick={handleSignUp}>ENTER</button>
             </div>
           </form>

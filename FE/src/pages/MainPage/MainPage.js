@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './MainPage.module.scss'
 import MainPageDesktop from './MainPage-Desktop'
+import MainPageMobile from './MainPage-Mobile';
 
 export default function MainPage() {
     const [width, setWidth] = React.useState(window.innerWidth);
@@ -14,5 +15,5 @@ export default function MainPage() {
         return () => window.removeEventListener("resize", handleWindowResize);
       }, []);
 
-      return width < breakpoint ? <> Mobile</> : <MainPageDesktop />;
+      return width < breakpoint ? <MainPageMobile/> : <MainPageDesktop />;
 }

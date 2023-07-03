@@ -5,11 +5,22 @@ import Modal from 'react-bootstrap/Modal';
 import { logout } from '../../utilities/firebase'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from "./MainPage-Desktop.module.scss"
+import { signOut } from 'firebase/auth';
 
 
 export default function MainPageDesktop() {
     const [titleChat, setTitleChat] = React.useState("")
+    const [displayName, setDisplayName] = React.useState("")
     const [isOpen, setIsOpen] = React.useState(false)
+    const [isHovering, setIsHovering] = React.useState(false);
+
+    const handleMouseOver = () => {
+      setIsHovering(true);
+    };
+  
+    const handleMouseOut = () => {
+      setIsHovering(!isHovering);
+    };
 
     const handleKeyDown = (e) => {
         // Reset field height
@@ -32,6 +43,13 @@ export default function MainPageDesktop() {
         logout();
     }
 
+    const handleUserInfo = () => {
+        // show display name
+        // show email
+        // show avatar
+    }
+
+
     return (
         <div class="container-fluid">
             <div class={`${styles["main-content"]} row`}>
@@ -39,11 +57,15 @@ export default function MainPageDesktop() {
                     <div class={`${styles["user_info"]} d-flex  justify-content-center align-items-center`}>
                         <img src="/img/user.png" alt="Avatar" class={`${styles["avatar"]} col-5 g-0`} />
                         <span class="flex-grow-1">Username</span>
-                        <i class="fas fa-cog">
-                            <div className={`${styles["config_popup"]} d-none`}>
-                                <div>User Information</div>
-                                <div>Sign Out</div>
-                            </div>
+                        <i class="fas fa-cog"
+                        onClick={handleMouseOut}
+                        >
+                            {isHovering && (
+                                <div onMouseOver={handleMouseOver} className={`${styles["config_popup"]}`}>
+                                    <div onClick={handleUserInfo} onMouseOut = {handleMouseOut}>User Information</div>
+                                    <div onClick={handleSignOut} onMouseOut = {handleMouseOut}>Sign Out</div>
+                                </div>
+                            )}
                         </i>
                     </div>
 
@@ -278,7 +300,6 @@ export default function MainPageDesktop() {
                         <i class="fas fa-paper-plane g-0"></i>
                     </div>
                 </div>
-
 
                 <Modal show={isOpen} onHide={handleClose} className={`${styles["modalBox"]}`}>
                     <Modal.Header closeButton>

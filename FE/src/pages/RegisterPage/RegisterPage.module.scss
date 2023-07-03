@@ -1,4 +1,4 @@
-$background-color-primary: linear-gradient(to right, #9900ff, #cc80ff);
+$background-color-primary: linear-gradient(109.6deg, rgba(156,252,248,1) 11.2%, rgba(110,123,251,1) 91.1%);
 $background-color-secondary: #000;
 
 .bg-size {
@@ -129,15 +129,47 @@ form {
 
 
 .btn-primary {
-    background-color: #49e934e8 !important;
-    border: none !important;
+    appearance: none;
+    background-color: #FFFFFF;
+    border-radius: 40em;
+    border-style: none;
+    box-shadow: #ADCFFF 0 -12px 6px inset;
+    box-sizing: border-box;
+    color: #000000;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system,sans-serif;
+    font-size: 0.8em;
+    font-weight: 700;
+    letter-spacing: -.24px;
+    margin: 0;
+    outline: none;
+    padding: 5px;
+    quotes: auto;
+    text-align: center;
+    text-decoration: none;
+    transition: all .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
 
-    &:hover,
+    &:hover {
+        background-color: #FFC229;
+        box-shadow: #FF6314 0 -6px 8px inset;
+        transform: scale(1.125);
+    }
     &:active,
     &:visited {
-        background-color: #38b627e8 !important;
+        transform: scale(1.025);
     }
 }
+
+@media (min-width: 768px) {
+    .btn-primary {
+      font-size: 1em;
+      padding: .5rem 1em;
+    }
+  }
 
 
 .line {
