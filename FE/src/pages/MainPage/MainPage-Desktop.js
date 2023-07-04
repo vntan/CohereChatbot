@@ -1,5 +1,6 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
+import CustomModal from "../../components/CustomModel/CustomModal";
 
 import { logout, getCurrentUser } from "../../utilities/firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -302,7 +303,7 @@ export default function MainPageDesktop() {
 
               <div className={`${styles["listChat"]}`}>
                 <div>
-                  <img src="./img/bot_chat.png" alt="bot_chat" />
+                  <img src="./img/chatbot.png" alt="bot_chat" />
                   <span>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit.
                     Quisquam quis expedita, numquam voluptas cum facere nemo
@@ -329,7 +330,7 @@ export default function MainPageDesktop() {
                 </div>
 
                 <div>
-                  <img src="./img/bot_chat.png" alt="bot_chat" />
+                  <img src="./img/chatbot.png" alt="bot_chat" />
                   <span>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit.
                     Quisquam quis expedita, numquam voluptas cum facere nemo
@@ -356,7 +357,7 @@ export default function MainPageDesktop() {
                 </div>
 
                 <div>
-                  <img src="./img/bot_chat.png" alt="bot_chat" />
+                  <img src="./img/chatbot.png" alt="bot_chat" />
                   <span>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit.
                     Quisquam quis expedita, numquam voluptas cum facere nemo
@@ -383,7 +384,7 @@ export default function MainPageDesktop() {
                 </div>
 
                 <div>
-                  <img src="./img/bot_chat.png" alt="bot_chat" />
+                  <img src="./img/chatbot.png" alt="bot_chat" />
                   <span>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit.
                     Quisquam quis expedita, numquam voluptas cum facere nemo
@@ -441,76 +442,70 @@ export default function MainPageDesktop() {
           </div>
         </div>
 
-        <Modal
-          show={isOpen}
-          onHide={handleClose}
-          className={`${styles["modalBox1"]}`}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>
-              <span style={{ fontWeight: "800", fontSize: "24px" }}>
-                About us
-              </span>
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <span style={{ fontFamily: "Arial" }}>
-              <b style={{ fontFamily: "Arial" }}>* GIÁO VIÊN HƯỚNG DẪN:</b>{" "}
-              <br />
-              1. Đinh Điền <br />
-              2. Nguyễn Bảo Long <br />
-              <br />
-              <b style={{ fontFamily: "Arial" }}>* THÀNH VIÊN NHÓM:</b> <br />
-              1. 20127323 - Võ Nhật Tân <br />
-              2. 20127447 - Ngô Đức Bảo <br />
-              3. 20127681 - Nguyễn Thiên Phúc <br />
-            </span>
-          </Modal.Body>
-        </Modal>
 
-        <Modal
-          show={isOpenEdit}
-          onHide={handleCloseEdit}
-          className={`${styles["modalBox2"]}`}
+
+        <CustomModal
+          title="User Information"
+          show={isOpen}
+          isHasFooter={false}
+          isHasEditButton={false}
+          styleTitle={{ fontWeight: "800", fontSize: "24px" }}
+          onCloseClick={handleClose}
+          className={`${styles["modalBox"]}`}
         >
-          <Modal.Header closeButton>
-            <Modal.Title>
-              <span style={{ fontWeight: "800", fontSize: "24px" }}>
-                User Information
-              </span>
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <img
-              src={
-                getCurrentUser().photoURL
-                  ? getCurrentUser().photoURL
-                  : "./img/user.png"
-              }
-              alt="Avatar"
-              class={`${styles["avatar_info"]} col-5 g-0`}
-            />
+          <span style={{ fontFamily: "Arial" }}>
+            <b style={{ fontFamily: "Arial" }}>* GIÁO VIÊN HƯỚNG DẪN:</b>{" "}
             <br />
-            <span
-              style={{
-                fontFamily: "Arial",
-                textAlign: "center",
-                display: "block",
-              }}
-            >
-              <span style={{ fontFamily: "Arial" }}>Email: </span>
-              <span style={{ fontFamily: "Arial" }}>
-                {getCurrentUser().email}{" "}
-              </span>
-              <br />
-              <span style={{ fontFamily: "Arial" }}>Username: </span>
-              <span style={{ fontFamily: "Arial" }}>
-                {getCurrentUser().displayName}{" "}
-              </span>
-              <br />
-            </span>
-          </Modal.Body>
-        </Modal>
+            1. Đinh Điền <br />
+            2. Nguyễn Bảo Long <br />
+            <br />
+            <b style={{ fontFamily: "Arial" }}>* THÀNH VIÊN NHÓM:</b> <br />
+            1. 20127323 - Võ Nhật Tân <br />
+            2. 20127447 - Ngô Đức Bảo <br />
+            3. 20127681 - Nguyễn Thiên Phúc <br />
+          </span>
+        </CustomModal>
+
+
+        <CustomModal
+          title="User Information"
+          show={isOpenEdit}
+          isHasFooter={false}
+          isHasEditButton={true}
+          styleTitle={{ fontWeight: "800", fontSize: "24px" }}
+          onCloseClick={handleCloseEdit}
+          className={`${styles["modalBox"]}`}
+        >
+          <img
+            src={
+              getCurrentUser().photoURL
+                ? getCurrentUser().photoURL
+                : "./img/user.png"
+            }
+            alt="Avatar"
+            class={`${styles["avatar_info"]} col-5 g-0`}
+          />
+          <br />
+
+          <div className="d-flex justify-content-center align-items-center">
+            <table style={{
+              fontFamily: "Arial",
+              display: "block",
+            }}>
+              <tr>
+                <td>Email</td>
+                <td>{getCurrentUser().email}{" "}</td>
+              </tr>
+
+              <tr>
+                <td >Display Name</td>
+                <td>{getCurrentUser().displayName}{" "}</td>
+              </tr>
+            </table>
+          </div>
+
+
+        </CustomModal>
       </div>
     </div>
   );
