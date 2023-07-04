@@ -1,4 +1,3 @@
-
 import { initializeApp } from "firebase/app";
 import {
   GoogleAuthProvider,
@@ -8,6 +7,7 @@ import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signOut,
+  updatePassword,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -16,13 +16,14 @@ const firebaseConfig = {
   projectId: "coherechatbot",
   storageBucket: "coherechatbot.appspot.com",
   messagingSenderId: "729720254020",
-  appId: "1:729720254020:web:3319662df8c6fb74da5611"
+  appId: "1:729720254020:web:3319662df8c6fb74da5611",
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const googleProvider = new GoogleAuthProvider();
+
 const signInWithGoogle = async () => {
   try {
     const res = await signInWithPopup(auth, googleProvider);
@@ -68,6 +69,23 @@ const logout = () => {
   signOut(auth);
 };
 
+const changePassword = async (newPassword) => {
+  const user = auth().currentUser;
+
+  try {
+    await updatePassword(user, newPassword);
+    console.log("Password Updated!");
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getCurrentUser = () => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  return user;
+};
 
 export {
   auth,
@@ -77,4 +95,6 @@ export {
   registerWithEmailAndPassword,
   sendPasswordReset,
   logout,
+  changePassword,
+  getCurrentUser,
 };
