@@ -1,4 +1,4 @@
-$main_content_bg_color : linear-gradient(109.6deg, rgba(156,252,248,1) 11.2%, rgba(110,123,251,1) 91.1%);
+$main_content_bg_color : linear-gradient(109.6deg, rgb(156, 188, 252) 11.2%, rgba(110,123,251,1) 91.1%);
 
 .main-content {
     background: $main_content_bg_color;
@@ -27,6 +27,7 @@ $main_content_bg_color : linear-gradient(109.6deg, rgba(156,252,248,1) 11.2%, rg
             width: 5vb;
             height: 5vb;
             border-radius: 50%;
+            align-items: center;
         }
 
         &>span {
@@ -40,6 +41,7 @@ $main_content_bg_color : linear-gradient(109.6deg, rgba(156,252,248,1) 11.2%, rg
 
         &>i {
             position: relative;
+            cursor: pointer;
 
             &>.config_popup {
                 position: absolute;
@@ -297,10 +299,25 @@ $main_content_bg_color : linear-gradient(109.6deg, rgba(156,252,248,1) 11.2%, rg
 
 
 
-.modalBox {
+.modalBox1 {
     position: fixed;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
 }
 
+.modalBox2 {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.avatar_info {
+    width: 10vb;
+    height: 10vb;
+    border-radius: 50%;
+    // assign in the middle of the box
+    margin: auto;
+    display: block;
+}

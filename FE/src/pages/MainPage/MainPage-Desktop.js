@@ -10,8 +10,13 @@ import { signOut } from 'firebase/auth';
 
 export default function MainPageDesktop() {
     const [titleChat, setTitleChat] = React.useState("")
-    const [displayName, setDisplayName] = React.useState("")
     const [isOpen, setIsOpen] = React.useState(false)
+    const [userInfo, setUserInfo] = React.useState({
+            displayName: "Admin",
+            email: "Admin@gmail.com",
+            photoURL: ""
+        })
+    const [isOpenEdit, setIsOpenEdit] = React.useState(false)
     const [isHovering, setIsHovering] = React.useState(false);
 
     const handleMouseOver = () => {
@@ -39,16 +44,12 @@ export default function MainPageDesktop() {
 
     const handleClose = () => setIsOpen(false);
 
+    const handleOpenEdit = () => setIsOpenEdit(true);
+    const handleCloseEdit = () => setIsOpenEdit(false);
+
     const handleSignOut = () => {
         logout();
     }
-
-    const handleUserInfo = () => {
-        // show display name
-        // show email
-        // show avatar
-    }
-
 
     return (
         <div class="container-fluid">
@@ -56,13 +57,13 @@ export default function MainPageDesktop() {
                 <div class={`${styles["control-panel"]} ${styles["control-panel--rounded"]} g-0 col-sm-4 col-lg-3 d-none d-sm-flex flex-column d-flex justify-content-between`}>
                     <div class={`${styles["user_info"]} d-flex  justify-content-center align-items-center`}>
                         <img src="/img/user.png" alt="Avatar" class={`${styles["avatar"]} col-5 g-0`} />
-                        <span class="flex-grow-1">Username</span>
+                        <span class="flex-grow-1">{userInfo.displayName}</span>
                         <i class="fas fa-cog"
                         onClick={handleMouseOut}
                         >
                             {isHovering && (
                                 <div onMouseOver={handleMouseOver} className={`${styles["config_popup"]}`}>
-                                    <div onClick={handleUserInfo} onMouseOut = {handleMouseOut}>User Information</div>
+                                    <div onClick={handleOpenEdit} onMouseOut = {handleMouseOut}>User Information</div>  
                                     <div onClick={handleSignOut} onMouseOut = {handleMouseOut}>Sign Out</div>
                                 </div>
                             )}
@@ -301,7 +302,7 @@ export default function MainPageDesktop() {
                     </div>
                 </div>
 
-                <Modal show={isOpen} onHide={handleClose} className={`${styles["modalBox"]}`}>
+                <Modal show={isOpen} onHide={handleClose} className={`${styles["modalBox1"]}`}>
                     <Modal.Header closeButton>
                         <Modal.Title>
                             <span style={{ fontWeight: '800', fontSize: '24px' }}>About us</span>
@@ -317,6 +318,29 @@ export default function MainPageDesktop() {
                             1. 20127323 - Võ Nhật Tân <br />
                             2. 20127447 - Ngô Đức Bảo <br />
                             3. 20127681 - Nguyễn Thiên Phúc <br />
+                        </span>
+                    </Modal.Body>
+
+                </Modal>
+
+                <Modal show={isOpenEdit} onHide={handleCloseEdit} className={`${styles["modalBox2"]}`}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>
+                            <span style={{ fontWeight: '800', fontSize: '24px' }}>User Information</span>
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body >
+                        <img src="/img/user.png" alt="Avatar" class={`${styles["avatar_info"]} col-5 g-0`} />
+                        <br />
+                        <span style={{ fontFamily: 'Arial', textAlign: 'center', display: 'block' }}>
+                            <span style={{ fontFamily: 'Arial'}}>Username: </span>
+                            <span style={{ fontFamily: 'Arial' }}>{userInfo.displayName} </span>
+                            <i class="fas fa-edit me-1"></i>
+                            <br />
+                            <span style={{ fontFamily: 'Arial' }}>Email: </span>
+                            <span style={{ fontFamily: 'Arial' }}>{userInfo.email} </span>
+                            <br />
+                            
                         </span>
                     </Modal.Body>
 
