@@ -8,7 +8,14 @@ import {
   sendPasswordResetEmail,
   signOut,
   updatePassword,
+  updateProfile 
 } from "firebase/auth";
+
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL 
+} from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB03RomAk275Pc4NnCakRGu_Yz17ZXjPas",
@@ -87,6 +94,19 @@ const getCurrentUser = () => {
   return user;
 };
 
+const updateUserProfile = async (name, photoURL) => {
+  const auth = getAuth();
+  try {
+    await updateProfile(auth.currentUser, {
+      displayName: name,
+      photoURL: photoURL,
+    });
+    console.log("User Updated!");
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export {
   auth,
   signInWithGoogle,
@@ -97,4 +117,5 @@ export {
   logout,
   changePassword,
   getCurrentUser,
+  updateUserProfile
 };

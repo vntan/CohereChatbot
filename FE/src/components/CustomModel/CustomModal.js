@@ -25,13 +25,13 @@ export default function CustomModal({
                 <span style={styleTitle}>
                   {title}
                 </span></h5>
-              <div className="d-flex">
 
+              <div className="d-flex">
                 {
                   isHasEditButton &&
                   <button type="button" className={`${styles["btn-close"]} btn-close d-flex`} onClick={onEditClick}>
-                    <span aria-hidden="true"><i class="fas fa-edit"></i></span>
-                  </button>
+                    <span aria-hidden="true"><i class="fas fa-edit" ></i></span>
+                  </button> 
                 }
 
                 <button type="button" className={`${styles["btn-close"]} btn-close`} onClick={onCloseClick}>
@@ -43,7 +43,7 @@ export default function CustomModal({
             <div className="modal-body">
               {children}
             </div>
-
+            
             {
               isHasFooter &&
               <div className="modal-footer">

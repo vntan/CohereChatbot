@@ -1,24 +1,25 @@
 import React from "react";
-import Modal from "react-bootstrap/Modal";
 import CustomModal from "../../components/CustomModel/CustomModal";
 
-import { logout, getCurrentUser } from "../../utilities/firebase";
+import { logout, getCurrentUser, updateUserProfile, changePassword } from "../../utilities/firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./MainPage-Desktop.module.scss";
-import { signOut } from "firebase/auth";
 
 export default function MainPageDesktop() {
-  const [titleChat, setTitleChat] = React.useState("");
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [isOpenEdit, setIsOpenEdit] = React.useState(false);
-  const [isHovering, setIsHovering] = React.useState(false);
+  const [isOpenAboutUs, setIsOpenAboutUs] = React.useState(false);
+  const [isOpenUserInformation, setIsOpenUserInformation] = React.useState(false);
+  const [isOpenEditUserInformation, setIsOpenEditUserInformation] = React.useState(false);
+  const [isHoveringSetting, setIsHoveringSetting] = React.useState(false);
+  const [inputDisplayName, setInputDisplayName] = React.useState(getCurrentUser().displayName);
+  const [inputNewPassword, setInputNewPassword] = React.useState("");
+  const [userPhotoURL, setUserPhotoURL] = React.useState(getCurrentUser().photoURL);
 
   const handleMouseOver = () => {
-    setIsHovering(true);
+    setIsHoveringSetting(true);
   };
 
   const handleMouseOut = () => {
-    setIsHovering(!isHovering);
+    setIsHoveringSetting(!isHoveringSetting);
   };
 
   const handleKeyDown = (e) => {
@@ -37,14 +38,21 @@ export default function MainPageDesktop() {
     e.target.style.height = `${Math.min(60, height)}px`;
   };
 
-  const handleClose = () => setIsOpen(false);
-
-  const handleOpenEdit = () => setIsOpenEdit(true);
-  const handleCloseEdit = () => setIsOpenEdit(false);
+  const handleClose = () => setIsOpenAboutUs(false);
 
   const handleSignOut = () => {
     logout();
   };
+
+  const handleUserInformationEditClick = () => {
+    setIsOpenUserInformation(false);
+    setIsOpenEditUserInformation(true);
+  }
+
+  const handleUpdateUserInformation = (e) => {
+    
+    // setIsOpenEditUserInformation(false);
+  }
 
   return (
     <div class="container-fluid">
@@ -66,12 +74,12 @@ export default function MainPageDesktop() {
             />
             <span class="flex-grow-1">{getCurrentUser().displayName}</span>
             <i class="fas fa-cog" onClick={handleMouseOut}>
-              {isHovering && (
+              {isHoveringSetting && (
                 <div
                   onMouseOver={handleMouseOver}
                   className={`${styles["config_popup"]}`}
                 >
-                  <div onClick={handleOpenEdit} onMouseOut={handleMouseOut}>
+                  <div onClick={() => setIsOpenUserInformation(true)} onMouseOut={handleMouseOut}>
                     User Information
                   </div>
                   <div onClick={handleSignOut} onMouseOut={handleMouseOut}>
@@ -279,7 +287,7 @@ export default function MainPageDesktop() {
 
           <div
             class={`${styles["about_us"]} d-flex align-items-center`}
-            onClick={() => setIsOpen(true)}
+            onClick={() => setIsOpenAboutUs(true)}
           >
             <i class="fas fa-info-circle me-2"></i>
             <span>About us</span>
@@ -445,8 +453,8 @@ export default function MainPageDesktop() {
 
 
         <CustomModal
-          title="User Information"
-          show={isOpen}
+          title="About us"
+          show={isOpenAboutUs}
           isHasFooter={false}
           isHasEditButton={false}
           styleTitle={{ fontWeight: "800", fontSize: "24px" }}
@@ -469,12 +477,13 @@ export default function MainPageDesktop() {
 
         <CustomModal
           title="User Information"
-          show={isOpenEdit}
+          show={isOpenUserInformation}
           isHasFooter={false}
           isHasEditButton={true}
           styleTitle={{ fontWeight: "800", fontSize: "24px" }}
-          onCloseClick={handleCloseEdit}
+          onCloseClick={() => setIsOpenUserInformation(false)}
           className={`${styles["modalBox"]}`}
+          onEditClick={handleUserInformationEditClick}
         >
           <img
             src={
@@ -503,9 +512,54 @@ export default function MainPageDesktop() {
               </tr>
             </table>
           </div>
-
-
         </CustomModal>
+
+        <CustomModal
+          title="Edit User Information"
+          show={isOpenEditUserInformation}
+          isHasFooter={true}
+          isHasEditButton={true}
+          styleTitle={{ fontWeight: "800", fontSize: "24px" }}
+          onCloseClick={() => setIsOpenEditUserInformation(false)}
+          className={`${styles["modalBox"]}`}
+          isExitClickOutside={false}
+          onSaveChange={handleUpdateUserInformation}
+        >
+          <img
+            src={
+              getCurrentUser().photoURL
+                ? getCurrentUser().photoURL
+                : "./img/user.png"
+            }
+            alt="Avatar"
+            class={`${styles["avatar_info"]} col-5 g-0`}
+          />
+          <br />
+
+          <div className="d-flex justify-content-center align-items-center">
+            <table style={{
+              fontFamily: "Arial",
+              display: "block",
+            }}>
+              <tr>
+                <td>Email</td>
+                <td>{getCurrentUser().email}{" "}</td>
+              </tr>
+
+              <tr>
+                <td >Display Name</td>
+                <input type="text" value={inputDisplayName} onChange={(e) => setInputDisplayName(e.target.value)}/>
+              </tr>
+
+              <tr>
+                <td >New Password</td>
+                <input type="inputNewPassword" onChange={(e) => setInputNewPassword(e.target.value)}/>
+              </tr>
+            </table>
+          </div>
+        </CustomModal>
+
+
       </div>
     </div>
   );
