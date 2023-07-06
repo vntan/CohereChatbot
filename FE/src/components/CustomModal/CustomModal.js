@@ -1,5 +1,6 @@
 import React from "react";
-import styles from './CustomModal.scss'
+import styles from './CustomModal.module.scss'
+
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function CustomModal({
@@ -8,16 +9,16 @@ export default function CustomModal({
   isHasEditButton = false,
   isHasFooter = true,
   isExitClickOutside = true,
+  isDisableConfirmedButton = false,
   onCloseClick,
   onEditClick,
   onSaveChange,
   styleTitle,
-  className,
   children }) {
   return (
 
     show &&
-    <div className={`${className} modal`} style={{ display: "block" }} onClick={isExitClickOutside ? onCloseClick : null}>
+    <div className={`${styles["modalBox"]} modal`} style={{ display: "block" }} onClick={isExitClickOutside ? onCloseClick : null}>
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
@@ -47,7 +48,7 @@ export default function CustomModal({
             {
               isHasFooter &&
               <div className="modal-footer">
-                <button type="button" className="btn btn-primary" onClick={onSaveChange}>Save changes</button>
+                <button type="button" className="btn btn-primary" onClick={onSaveChange} disabled={isDisableConfirmedButton}>Save changes</button>
                 <button type="button" className="btn btn-secondary" onClick={onCloseClick}>Close</button>
               </div>
             }

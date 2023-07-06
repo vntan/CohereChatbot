@@ -1,0 +1,20 @@
+.avatar_info {
+    width: 10vb;
+    height: 10vb;
+    border-radius: 50%;
+    // assign in the middle of the box
+    margin: auto;
+    display: block;
+  }
+  
+
+.table_userInfo{
+
+    &>tr>*{
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    &>tr>td:last-child{
+        padding-left: 12px;
+    }
+}

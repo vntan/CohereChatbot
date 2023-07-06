@@ -26,7 +26,6 @@ $main_content_bg_color: linear-gradient(
     height: 50px;
     padding: 10px 10px;
 
-
     & > .avatar {
       vertical-align: middle;
       width: 5vb;
@@ -201,7 +200,7 @@ $main_content_bg_color: linear-gradient(
 
       & > .listChat {
         overflow: auto;
-        height: calc(100% - 14%);
+        height: calc(100% - 12%);
 
         border-bottom-left-radius: 12px;
         border-bottom-right-radius: 12px;
@@ -217,10 +216,11 @@ $main_content_bg_color: linear-gradient(
             flex-direction: row;
 
             & > img {
-              width: 40px;
-              height: 40px;
-              margin-right: 12px;
+              vertical-align: middle;
+              width: 5vb;
+              height: 5vb;
               border-radius: 50%;
+              align-items: center;
             }
 
             & > span {
@@ -236,10 +236,11 @@ $main_content_bg_color: linear-gradient(
             flex-direction: row-reverse;
 
             & > img {
-              width: 40px;
-              height: 40px;
-              margin-left: 12px;
+              vertical-align: middle;
+              width: 5vb;
+              height: 5vb;
               border-radius: 50%;
+              align-items: center;
             }
 
             & > span {
@@ -247,6 +248,7 @@ $main_content_bg_color: linear-gradient(
               border-radius: 12px;
               padding: 10px;
               font-family: "Arial";
+              margin-right: 12px;
             }
           }
         }
@@ -282,20 +284,4 @@ $main_content_bg_color: linear-gradient(
       font-size: 24px;
     }
   }
-}
-
-.modalBox {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-.avatar_info {
-  width: 10vb;
-  height: 10vb;
-  border-radius: 50%;
-  // assign in the middle of the box
-  margin: auto;
-  display: block;
 }

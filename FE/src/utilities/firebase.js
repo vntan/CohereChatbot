@@ -1,9 +1,10 @@
-import { initializeApp } from "firebase/app";
+import { FirebaseError, initializeApp } from "firebase/app";
 import {
   GoogleAuthProvider,
   getAuth,
   signInWithPopup,
   signInWithEmailAndPassword,
+  reauthenticateWithPopup,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signOut,
@@ -12,6 +13,7 @@ import {
 } from "firebase/auth";
 
 import {
+  getStorage,
   ref,
   uploadBytesResumable,
   getDownloadURL 
@@ -28,8 +30,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-
 const googleProvider = new GoogleAuthProvider();
+const storage = getStorage(app);
 
 const signInWithGoogle = async () => {
   try {
@@ -77,13 +79,20 @@ const logout = () => {
 };
 
 const changePassword = async (newPassword) => {
-  const user = auth().currentUser;
-
   try {
-    await updatePassword(user, newPassword);
+    const user = auth.currentUser;
+    await updatePassword(user, newPassword)
     console.log("Password Updated!");
   } catch (err) {
-    console.log(err);
+      console.error(err.code);
+      if (err.code == 'auth/requires-recent-login'){
+        reauthenticateWithPopup(auth.currentUser, googleProvider)
+        .then(async (result) => {
+          await changePassword(newPassword);
+        })  
+        .catch((error) => {
+        });
+      }
   }
 };
 
@@ -94,18 +103,51 @@ const getCurrentUser = () => {
   return user;
 };
 
-const updateUserProfile = async (name, photoURL) => {
+const updateDisplaynameUserProfile = async (displayName) => {
   const auth = getAuth();
   try {
     await updateProfile(auth.currentUser, {
-      displayName: name,
-      photoURL: photoURL,
+      displayName,
     });
-    console.log("User Updated!");
+    console.log("DisplayName Updated!");
   } catch (err) {
     console.log(err);
   }
 }
+
+const updatePhotoURLUserProfile = async (photoURL) => {
+  const auth = getAuth();
+  try {
+    await updateProfile(auth.currentUser, {
+        photoURL,
+    });
+    console.log("PhotoURL Updated!");
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+
+
+
+const uploadFile = (filename, file, cb) => {
+  const storageRef = ref(storage,`/files/${filename}`)
+  const uploadTask = uploadBytesResumable(storageRef, file);
+
+  uploadTask.on(
+      "state_changed",
+      (snapshot) => {},
+      (err) => {console.log(err); cb(null)},
+      async () => {
+          // download url
+          await getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+              cb(url);
+          });
+      }
+  ); 
+}
+
+
 
 export {
   auth,
@@ -117,5 +159,8 @@ export {
   logout,
   changePassword,
   getCurrentUser,
-  updateUserProfile
+  uploadFile,
+  updateDisplaynameUserProfile,
+  updatePhotoURLUserProfile
+  
 };

@@ -1,26 +1,25 @@
-import React from "react";
-import CustomModal from "../../components/CustomModel/CustomModal";
+import React, { useState, useEffect } from "react";
+import CustomModal from "../../components/CustomModal/CustomModal";
 
-import { logout, getCurrentUser, updateUserProfile, changePassword } from "../../utilities/firebase";
+import { logout, getCurrentUser } from "../../utilities/firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./MainPage-Desktop.module.scss";
+import AboutUsModal from "../../components/AboutUsModal/AboutUsModal";
+import UserInformationModal from "../../components/UserInformationModal/UserInformationModal";
+import EditUserModal from "../../components/EditUserModal/EditUserModal";
 
 export default function MainPageDesktop() {
-  const [isOpenAboutUs, setIsOpenAboutUs] = React.useState(false);
-  const [isOpenUserInformation, setIsOpenUserInformation] = React.useState(false);
-  const [isOpenEditUserInformation, setIsOpenEditUserInformation] = React.useState(false);
-  const [isHoveringSetting, setIsHoveringSetting] = React.useState(false);
-  const [inputDisplayName, setInputDisplayName] = React.useState(getCurrentUser().displayName);
-  const [inputNewPassword, setInputNewPassword] = React.useState("");
-  const [userPhotoURL, setUserPhotoURL] = React.useState(getCurrentUser().photoURL);
 
-  const handleMouseOver = () => {
-    setIsHoveringSetting(true);
-  };
+  const [userInfo, setUserInfo] = useState(getCurrentUser());
+  const [isHoveringSetting, setIsHoveringSetting] = useState(false);
+  const [isOpenAboutUs, setIsOpenAboutUs] = useState(false);
+  const [isOpenUserInformation, setIsOpenUserInformation] = useState(false);
+  const [isOpenEditUserInformation, setIsOpenEditUserInformation] =
+    useState(false);
 
-  const handleMouseOut = () => {
-    setIsHoveringSetting(!isHoveringSetting);
-  };
+  useEffect(()=>{
+    setUserInfo(getCurrentUser());
+  }, [isOpenEditUserInformation])
 
   const handleKeyDown = (e) => {
     // Reset field height
@@ -38,21 +37,10 @@ export default function MainPageDesktop() {
     e.target.style.height = `${Math.min(60, height)}px`;
   };
 
-  const handleClose = () => setIsOpenAboutUs(false);
-
-  const handleSignOut = () => {
-    logout();
-  };
-
   const handleUserInformationEditClick = () => {
     setIsOpenUserInformation(false);
     setIsOpenEditUserInformation(true);
-  }
-
-  const handleUpdateUserInformation = (e) => {
-    
-    // setIsOpenEditUserInformation(false);
-  }
+  };
 
   return (
     <div class="container-fluid">
@@ -65,24 +53,33 @@ export default function MainPageDesktop() {
           >
             <img
               src={
-                getCurrentUser().photoURL
-                  ? getCurrentUser().photoURL
+                userInfo.photoURL
+                  ? userInfo.photoURL
                   : "./img/user.png"
               }
               alt="Avatar"
               class={`${styles["avatar"]} col-5 g-0`}
             />
-            <span class="flex-grow-1">{getCurrentUser().displayName}</span>
-            <i class="fas fa-cog" onClick={handleMouseOut}>
+            <span class="flex-grow-1">{userInfo.displayName}</span>
+            <i
+              class="fas fa-cog"
+              onClick={() => setIsHoveringSetting(!isHoveringSetting)}
+            >
               {isHoveringSetting && (
                 <div
-                  onMouseOver={handleMouseOver}
+                  onMouseOver={() => setIsHoveringSetting(true)}
                   className={`${styles["config_popup"]}`}
                 >
-                  <div onClick={() => setIsOpenUserInformation(true)} onMouseOut={handleMouseOut}>
+                  <div
+                    onClick={() => setIsOpenUserInformation(true)}
+                    onMouseOut={() => setIsHoveringSetting(!isHoveringSetting)}
+                  >
                     User Information
                   </div>
-                  <div onClick={handleSignOut} onMouseOut={handleMouseOut}>
+                  <div
+                    onClick={() => logout()}
+                    onMouseOut={() => setIsHoveringSetting(!isHoveringSetting)}
+                  >
                     Sign Out
                   </div>
                 </div>
@@ -323,8 +320,8 @@ export default function MainPageDesktop() {
                 <div>
                   <img
                     src={
-                      getCurrentUser().photoURL
-                        ? getCurrentUser().photoURL
+                      userInfo.photoURL
+                        ? userInfo.photoURL
                         : "./img/user.png"
                     }
                     alt="bot_chat"
@@ -350,8 +347,8 @@ export default function MainPageDesktop() {
                 <div>
                   <img
                     src={
-                      getCurrentUser().photoURL
-                        ? getCurrentUser().photoURL
+                      userInfo.photoURL
+                        ? userInfo.photoURL
                         : "./img/user.png"
                     }
                     alt="bot_chat"
@@ -377,8 +374,8 @@ export default function MainPageDesktop() {
                 <div>
                   <img
                     src={
-                      getCurrentUser().photoURL
-                        ? getCurrentUser().photoURL
+                      userInfo && userInfo.photoURL
+                        ? userInfo.photoURL
                         : "./img/user.png"
                     }
                     alt="bot_chat"
@@ -404,8 +401,8 @@ export default function MainPageDesktop() {
                 <div>
                   <img
                     src={
-                      getCurrentUser().photoURL
-                        ? getCurrentUser().photoURL
+                      userInfo.photoURL
+                        ? userInfo.photoURL
                         : "./img/user.png"
                     }
                     alt="bot_chat"
@@ -450,116 +447,24 @@ export default function MainPageDesktop() {
           </div>
         </div>
 
-
-
-        <CustomModal
-          title="About us"
+        <AboutUsModal
           show={isOpenAboutUs}
-          isHasFooter={false}
-          isHasEditButton={false}
-          styleTitle={{ fontWeight: "800", fontSize: "24px" }}
-          onCloseClick={handleClose}
-          className={`${styles["modalBox"]}`}
-        >
-          <span style={{ fontFamily: "Arial" }}>
-            <b style={{ fontFamily: "Arial" }}>* GIÁO VIÊN HƯỚNG DẪN:</b>{" "}
-            <br />
-            1. Đinh Điền <br />
-            2. Nguyễn Bảo Long <br />
-            <br />
-            <b style={{ fontFamily: "Arial" }}>* THÀNH VIÊN NHÓM:</b> <br />
-            1. 20127323 - Võ Nhật Tân <br />
-            2. 20127447 - Ngô Đức Bảo <br />
-            3. 20127681 - Nguyễn Thiên Phúc <br />
-          </span>
-        </CustomModal>
-
-
-        <CustomModal
-          title="User Information"
+          onClose={() => setIsOpenAboutUs(false)}
+        ></AboutUsModal>
+        <UserInformationModal
           show={isOpenUserInformation}
-          isHasFooter={false}
-          isHasEditButton={true}
-          styleTitle={{ fontWeight: "800", fontSize: "24px" }}
-          onCloseClick={() => setIsOpenUserInformation(false)}
-          className={`${styles["modalBox"]}`}
+          userInfo={userInfo}
+          onClose={() => setIsOpenUserInformation(false)}
           onEditClick={handleUserInformationEditClick}
-        >
-          <img
-            src={
-              getCurrentUser().photoURL
-                ? getCurrentUser().photoURL
-                : "./img/user.png"
-            }
-            alt="Avatar"
-            class={`${styles["avatar_info"]} col-5 g-0`}
-          />
-          <br />
+        ></UserInformationModal>
 
-          <div className="d-flex justify-content-center align-items-center">
-            <table style={{
-              fontFamily: "Arial",
-              display: "block",
-            }}>
-              <tr>
-                <td>Email</td>
-                <td>{getCurrentUser().email}{" "}</td>
-              </tr>
-
-              <tr>
-                <td >Display Name</td>
-                <td>{getCurrentUser().displayName}{" "}</td>
-              </tr>
-            </table>
-          </div>
-        </CustomModal>
-
-        <CustomModal
-          title="Edit User Information"
-          show={isOpenEditUserInformation}
-          isHasFooter={true}
-          isHasEditButton={true}
-          styleTitle={{ fontWeight: "800", fontSize: "24px" }}
-          onCloseClick={() => setIsOpenEditUserInformation(false)}
-          className={`${styles["modalBox"]}`}
-          isExitClickOutside={false}
-          onSaveChange={handleUpdateUserInformation}
-        >
-          <img
-            src={
-              getCurrentUser().photoURL
-                ? getCurrentUser().photoURL
-                : "./img/user.png"
-            }
-            alt="Avatar"
-            class={`${styles["avatar_info"]} col-5 g-0`}
-          />
-          <br />
-
-          <div className="d-flex justify-content-center align-items-center">
-            <table style={{
-              fontFamily: "Arial",
-              display: "block",
-            }}>
-              <tr>
-                <td>Email</td>
-                <td>{getCurrentUser().email}{" "}</td>
-              </tr>
-
-              <tr>
-                <td >Display Name</td>
-                <input type="text" value={inputDisplayName} onChange={(e) => setInputDisplayName(e.target.value)}/>
-              </tr>
-
-              <tr>
-                <td >New Password</td>
-                <input type="inputNewPassword" onChange={(e) => setInputNewPassword(e.target.value)}/>
-              </tr>
-            </table>
-          </div>
-        </CustomModal>
-
-
+        {/* Edit User Modal Here */}
+        {isOpenEditUserInformation && (
+          <EditUserModal
+            userInfo={getCurrentUser()}
+            onClose={() => setIsOpenEditUserInformation(false)}
+          ></EditUserModal>
+        )}
       </div>
     </div>
   );
