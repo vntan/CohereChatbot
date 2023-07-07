@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import CustomModal from "../../components/CustomModal/CustomModal";
 
 import { logout, getCurrentUser } from "../../utilities/firebase";
@@ -9,17 +10,19 @@ import UserInformationModal from "../../components/UserInformationModal/UserInfo
 import EditUserModal from "../../components/EditUserModal/EditUserModal";
 
 export default function MainPageDesktop() {
-
   const [userInfo, setUserInfo] = useState(getCurrentUser());
   const [isHoveringSetting, setIsHoveringSetting] = useState(false);
   const [isOpenAboutUs, setIsOpenAboutUs] = useState(false);
   const [isOpenUserInformation, setIsOpenUserInformation] = useState(false);
   const [isOpenEditUserInformation, setIsOpenEditUserInformation] =
     useState(false);
+  const [chatList, setChatList] = useState([]);
 
-  useEffect(()=>{
+  useEffect(() => {}, []);
+
+  useEffect(() => {
     setUserInfo(getCurrentUser());
-  }, [isOpenEditUserInformation])
+  }, [isOpenEditUserInformation]);
 
   const handleKeyDown = (e) => {
     // Reset field height
@@ -42,6 +45,33 @@ export default function MainPageDesktop() {
     setIsOpenEditUserInformation(true);
   };
 
+  const createNewChat = () => {
+    axios
+      .post("http://127.0.0.1:5000/create_chat", {
+        uid: userInfo.uid,
+        "chat name": "Test Chat 5",
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getChatList = () => {
+    axios
+      .post("http://localhost:5000/get_chats", {
+        uid: userInfo.uid,
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div class="container-fluid">
       <div class={`${styles["main-content"]} row`}>
@@ -52,11 +82,7 @@ export default function MainPageDesktop() {
             class={`${styles["user_info"]} d-flex  justify-content-center align-items-center`}
           >
             <img
-              src={
-                userInfo.photoURL
-                  ? userInfo.photoURL
-                  : "./img/user.png"
-              }
+              src={userInfo.photoURL ? userInfo.photoURL : "./img/user.png"}
               alt="Avatar"
               class={`${styles["avatar"]} col-5 g-0`}
             />
@@ -89,11 +115,14 @@ export default function MainPageDesktop() {
 
           <div class={`flex-grow-1`}>
             <div class={`${styles["line"]}`}></div>
-            <div class={`${styles["chat_new"]} d-flex align-items-center`}>
+            <div
+              class={`${styles["chat_new"]} d-flex align-items-center`}
+              onClick={createNewChat}
+            >
               <i class="fas fa-plus-circle"></i>
               <span>Add new chat</span>
             </div>
-
+            <button onClick={getChatList}>Test</button>
             <div class={`${styles["history_panel_title"]}`}>History</div>
             {/* <!-- History Panel --> */}
             <div class={`${styles["history_panel"]} flex-grow-1`}>
@@ -320,9 +349,7 @@ export default function MainPageDesktop() {
                 <div>
                   <img
                     src={
-                      userInfo.photoURL
-                        ? userInfo.photoURL
-                        : "./img/user.png"
+                      userInfo.photoURL ? userInfo.photoURL : "./img/user.png"
                     }
                     alt="bot_chat"
                   />
@@ -347,9 +374,7 @@ export default function MainPageDesktop() {
                 <div>
                   <img
                     src={
-                      userInfo.photoURL
-                        ? userInfo.photoURL
-                        : "./img/user.png"
+                      userInfo.photoURL ? userInfo.photoURL : "./img/user.png"
                     }
                     alt="bot_chat"
                   />
@@ -401,9 +426,7 @@ export default function MainPageDesktop() {
                 <div>
                   <img
                     src={
-                      userInfo.photoURL
-                        ? userInfo.photoURL
-                        : "./img/user.png"
+                      userInfo.photoURL ? userInfo.photoURL : "./img/user.png"
                     }
                     alt="bot_chat"
                   />

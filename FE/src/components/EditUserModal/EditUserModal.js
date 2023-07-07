@@ -124,19 +124,21 @@ export default function EditUserModal({ userInfo, onClose }) {
 
       <div className="d-flex justify-content-center align-items-center">
         <table className={`${styles["table_userInfo"]}`}>
+          <div className={`${styles["form_field"]}`}>
           <tr>
             <td>Email</td>
             <td>{userInfo.email} </td>
           </tr>
 
           <tr>
-            <td>Display Name</td>
+            <td for="name" class={`${styles["form_label"]}`}>Display Name</td>
             <td>
               <input
                 type="text"
                 value={inputDisplayName}
                 onChange={(e) => setInputDisplayName(e.target.value)}
                 disabled={isProcess}
+                className={`${styles["input_field"]}`}
               />
               {errInputDisplayName && (
                 <div className={`${styles["error"]}`}>
@@ -153,6 +155,7 @@ export default function EditUserModal({ userInfo, onClose }) {
                 type="password"
                 onChange={(e) => setInputNewPassword(e.target.value)}
                 disabled={isProcess}
+                className={`${styles["input_field"]}`}
               />
               {errInputNewPassword && (
                 <div className={`${styles["error"]}`}>
@@ -161,6 +164,7 @@ export default function EditUserModal({ userInfo, onClose }) {
               )}
             </td>
           </tr>
+          </div>
         </table>
       </div>
     </CustomModal>

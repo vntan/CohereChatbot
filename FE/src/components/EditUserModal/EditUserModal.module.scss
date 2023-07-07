@@ -1,3 +1,8 @@
+$primary: #11998e;
+$secondary: #38ef7d;
+$white: #fff;
+$gray: #9b9b9b;
+
 .edit_avatar{
     position: relative;
     cursor: pointer;
@@ -45,6 +50,14 @@
         font-family: Arial, Helvetica, sans-serif;
     }
 
+    &>tr>.form_label{
+        position: absolute;
+        top: 0;
+        display: block;
+        transition: 0.2s;
+        font-size: 1rem;
+        color: $gray;
+    }
     &>tr>td:last-child{
         padding-left: 12px;
     }
