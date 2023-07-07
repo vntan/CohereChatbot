@@ -1,331 +1,12 @@
 from flask import Flask, request, jsonify
-import cohere
-import hashlib
-import firebase_admin
 from firebase_admin import auth
-from firebase_admin import db
+
+import user_process
+from user_process import user_waiting_list, api_keys, task_done, cred_obj, default_app, ref, process_main
 
 from queue import Queue
-import uuid
 from threading import Thread
 import time
-
-profile_dict = {}
-waiting_list = []
-
-process_queue = []
-
-is_process = False
-
-system_status = 'free'
-
-task_done = False
-
-cred_obj = firebase_admin.credentials.Certificate('./coherechatbot.json')
-default_app = firebase_admin.initialize_app(cred_obj, {
-	'databaseURL':'https://coherechatbot-default-rtdb.asia-southeast1.firebasedatabase.app/'
-	})
-
-ref = db.reference("/")
-
-def add_bot_text(text):
-    return 'Cohere: ' + text
-
-def add_human_text(text):
-    return 'You: ' + text
-
-def clean_text(text):
-    return text.strip()
-
-def cut_answer(text):
-    index = text.find('You:')
-    if index != -1:
-        return text[:index]
-    else:
-        return text
-    
-def delete_indicator(text):
-    return text.replace("You: ", "").replace("Cohere: ", "")
-
-class CoHere:
-    def __init__(self, api_key):
-        self.co = cohere.Client(f'{api_key}')
-
-    def count_token(self, text):
-        return len(self.co.tokenize(text=text))
-
-    def asked(self, question, conv_dict, max_tokens=500, temp=0):
-        question_message = add_human_text(question)
-        
-        conv_list = list(conv_dict.values())
-        conv_list = conv_list + [question_message]
-
-        prompt = ('\n'.join(conv_list) + '\nCohere:')
-
-        summarized = False
-        
-        if self.count_token(prompt) > 3200:
-            summarized = True
-
-            back_size = (int)(len(conv_list)/7)
-            if back_size % 2 == 0:
-                back_size += 1
-            if back_size < 3:
-                back_size = 3
-
-            c_list = conv_list[:-back_size]
-            summary_list = []
-            for i in range(len(c_list)):
-                if 'Cohere:' in c_list[i]:
-                    summary_list.append(c_list[i])
-            for i in range(len(summary_list)):
-                summary_list[i] = summary_list[i].replace('Cohere:','')
-
-            summary_text = self.summarize('\n'.join(summary_list), temp=0).summary
-            summary_text = add_bot_text(clean_text(summary_text))
-
-            conv_list = [summary_text] + conv_list[-back_size:]
-
-            prompt = ('\n'.join(conv_list) + '\nCohere:')
-
-
-        answer = self.co.generate(
-              model='command-nightly',
-              prompt=prompt,
-              max_tokens=max_tokens,
-              temperature=temp).generations[0].text
-        answer = cut_answer(answer)
-        
-        conv_list.append(add_bot_text(clean_text(answer)))
-
-        return summarized, conv_list, clean_text(answer)
-    
-    def summarize(self, conserv, temp=0, command=''):
-        return self.co.summarize(text=conserv,
-                                 format='paragraph',
-                                 temperature=temp,
-                                 additional_command=command)
-
-
-api_key = 't7PsmTR4WNiJDsYIGaUqzK8XFF2M8EAdxDNXtHqk'
-
-cohere_bot = CoHere(api_key)
-
-def process_overload():
-    global profile_dict
-
-    global waiting_list
-
-    while len(waiting_list) != 0:
-        id = waiting_list.pop(0)
-        profile_dict[id]['code'] = 504
-        profile_dict[id]['time'] = time.time()
-        profile_dict[id]['status'] = True
-
-def get_process_1(wait_list):
-    global process_queue
-
-    global waiting_list
-
-    while len(wait_list) != 0:
-        uid = wait_list.pop(0)
-        process_queue.append(uid)
-        waiting_list.remove(uid)
-
-def sort_users(wait_list):
-    global profile_dict
-
-    new_wait_list = []
-    user_list = []
-    user_dict = {}
-
-    for id in wait_list:
-        uid = profile_dict[id]['data']['uid']
-
-        if uid not in user_list:
-            user_list.append(uid)
-            user_dict[uid] = []
-
-        user_dict[uid].append(id)
-
-    while len(user_list) != 0:
-        del_list = []
-        for uid in user_list:
-            new_wait_list.append(user_dict[uid].pop(0))
-            if len(user_dict[uid]) == 0:
-                del_list.append(uid)
-
-        for uid in del_list:
-            user_list.remove(uid)
-
-    return new_wait_list
-
-def get_process_2(wait_list):
-    global process_queue
-
-    new_wait_list = sort_users(wait_list)
-
-    while len(new_wait_list) != 0:
-        uid = new_wait_list.pop(0)
-        process_queue.append(uid)
-        waiting_list.remove(uid)
-
-def get_process_3(wait_list):
-    global system_status
-
-    global process_queue
-
-    new_wait_list = sort_users(wait_list)
-
-    num_user_accepted = 15 - len(process_queue)
-
-    for _ in range(num_user_accepted):
-        uid = new_wait_list.pop(0)
-        process_queue.append(uid)
-        waiting_list.remove(uid)
-
-    system_status = 'overload'
-    
-'''
-Xử lí tuần tự FIFO các user trong process_queue
-'''
-def process():
-    global task_done
-    global system_status
-
-    global profile_dict
-
-    global process_queue
-
-    while True:
-        if task_done: 
-            break
-
-        if len(process_queue) != 0:
-            try:
-                id = process_queue[0]
-
-                json_dict = profile_dict[id]['data']
-
-                uid = json_dict['uid']
-                chat_name = json_dict['chat name']
-                chat_ref = ref.child(uid).child('chat').child(chat_name)
-
-                question = json_dict['question']
-
-                conv_dict = chat_ref.child('summarized conversation').get()
-
-                summarized, conv_list, answer = cohere_bot.asked(question, conv_dict)
-
-                chat_ref.child('conversation').push(delete_indicator(conv_list[-2]))
-                chat_ref.child('conversation').push(delete_indicator(conv_list[-1]))
-
-                if summarized:
-                    chat_ref.child('summarized conversation').delete()
-                    
-                    for i in range(len(conv_list)):
-                        chat_ref.child('summarized conversation').push(conv_list[i])
-                
-                else: 
-                    chat_ref.child('summarized conversation').push(conv_list[-2])
-                    chat_ref.child('summarized conversation').push(conv_list[-1])
-
-                process_queue.pop(0)
-
-                profile_dict[id]['answer'] = answer
-                profile_dict[id]['code'] = 200
-                profile_dict[id]['time'] = time.time()
-                profile_dict[id]['status'] = True
-            except Exception as error:
-                print(error)
-                time.sleep(50)
-                continue
-
-        else:
-            time.sleep(1)
-
-    print("Terminate process")
-    
-'''
-Điều chỉnh biến system_status:
-"free": hàm check_wait_list sẽ lần lượt xem xét và đưa user vào process_queue
-"overload": server quá tải
-'''
-def set_system_status():
-    global system_status
-
-    global process_queue
-
-    if len(process_queue) <= 5:
-        system_status = 'free'
-
-    if system_status == 'overload':
-        return
-
-'''
-Việc chọn tác vụ sẽ phụ thuộc vào biến system_status và
-tổng user trong wait_list và process_queue
-'''
-def check_waiting_list(sleep_time):
-    global task_done
-
-    global system_status
-
-    global waiting_list
-    global process_queue
-
-    while True:
-        if task_done: 
-            break
-
-        time.sleep(sleep_time)
-        set_system_status()
-
-        if system_status == 'overload':
-            process_overload()
-            continue
-
-        if system_status == 'normal':
-            continue
-
-        wait_list = waiting_list.copy()
-
-        if len(wait_list) == 0:
-            continue
-
-        if len(wait_list) + len(process_queue) < 3:
-            get_process_1(wait_list)
-        elif len(wait_list) + len(process_queue) <= 15:
-            get_process_2(wait_list)
-        elif len(wait_list) + len(process_queue) > 15:
-            get_process_3(wait_list)
-
-    print("Terminate check waiting list")
-    
-
-'''
-Một user đã được xử lí nhưng vẫn nằm trong hệ thống quá 5s --> xoá user
-'''
-def cleaner():
-    global profile_dict
-
-    global task_done
-
-    while True:
-        if task_done:
-            break
-        time.sleep(5)
-
-        clean_profile = []
-
-        for key, value in profile_dict.items():
-            if value['status'] == True and time.time() - value['time'] > 5:
-                clean_profile.append(key)
-
-        for profile in clean_profile:
-            profile_dict.pop(profile)
-
-    print("Terminate cleaner")
 
 app = Flask(__name__)  
 
@@ -512,30 +193,39 @@ def ask_question():
             'message': 'Cannot find chat'
         })
     
-    id = str(uuid.uuid4())
     
     profile = {
+        'isServed': False,
         'data': json_dict,
         'status': False,
         'time': time.time()
     }
 
-    global profile_dict
-    global waiting_list
+    global user_waiting_list
+    
+    if uid not in user_waiting_list['users'].keys():
+        user_waiting_list['users'][uid] = {}
 
-    profile_dict[id] = profile.copy()
-    waiting_list.append(id)
+    idQuestion = str(time.time())
+    user_waiting_list["user_queue"].append(f"{uid}-{idQuestion}")
+    user_waiting_list['users'][uid][idQuestion] = profile
 
-    while not profile_dict[id]['status']:
+    while not user_waiting_list['users'][uid][idQuestion]["status"]:
         time.sleep(1)
 
-    profile_dict[id]['time'] = time.time()
+    profile = user_waiting_list['users'][uid][idQuestion].copy()
+    num_questions = len(user_waiting_list['users'][uid].keys())
+    if num_questions == 1: user_waiting_list['users'].pop(uid)
+    else: user_waiting_list['users'][uid].pop(idQuestion)
 
-    if profile_dict[id]['code'] == 200:
+   
+
+
+    if profile['code'] == 200:
         return jsonify({
             'status code': 200,
             'message': 'Complete',
-            'answer': profile_dict[id]['answer']
+            'answer': profile['answer']
         })
         
     return jsonify({
@@ -583,15 +273,10 @@ def detele_chat():
 
 if __name__ == '__main__':
     q = Queue()
-    t = Thread(target=check_waiting_list, args=(1,))
-    c = Thread(target=cleaner)
-    p = Thread(target=process)
+    t = Thread(target=process_main, args=())
+
     t.start()
-    p.start()
-    c.start()
     app.run()
     q.join()
-    task_done = True
+    user_process.task_done = True
     t.join()
-    p.join()
-    c.join()
