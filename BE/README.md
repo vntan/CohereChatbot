@@ -2,53 +2,80 @@
 
 Here is BE folder
 
-# Các api có thể gọi  
+# Callable API 
 
-### 1. /get_chats
-Dùng để lấy tất cả các đoạn chat    
-Dữ liệu json cần truyền: {"uid": "user_id"}  
-Mã trả về:  
-* 200: Thành công lấy về tất cả đoạn chat
-* 204: Tìm thấy user id nhưng không có đoạn chat nào được ghi nhận
-* 404: Không tim thấy user id  
-
-
-### 2. /get_chat
-Dùng để lấy một đoạn chat  
-Dữ liệu json cần truyền: {"uid": "user_id", "chat name": "chat_name"}  
-Lưu ý về "chat name" đã được đề cập ở /create_chat  
-Mã trả về:  
-* 200: Thành công lấy về đoạn chat
-* 400: Không tìm thấy đoạn chat có tên tương ứng
-* 404: Không tim thấy user id  
+### 1. /getHistoricalChat
+URL: /getHistoricalChat  
+Method: POST  
+Description: Get all of user's historical chat names  
+Data Request: {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID  
+}  
+Return Value: {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"listHistoricalChats": array contains user's historical chat names  
+}  
+Error Code:  
+404: Cannot find user id  
 
 
-### 3. /create_chat
-Dùng để tạo đoạn chat mới  
-Dữ liệu json cần truyền: {"uid": "user_id", "chat name": "chat_name"}  
-Lưu ý: "chat name" cần tránh những kí tự không được phép từ Firebase realtime database
-"If you create your own keys, they must be UTF-8 encoded, can be a maximum of 768 bytes, 
-and cannot contain ., $, #, [, ], /, or ASCII control characters 0-31 or 127. 
-You cannot use ASCII control characters in the values themselves, either."  
-Mã trả về:  
-* 200: Tạo đoạn chat thành công
-* 400: Không thể tạo đoạn chat
-* 404: Không tim thấy user id    
+### 2. /getOneChat
+URL: /getOneChat  
+Method: POST  
+Description: Get one chat messages base on chat name  
+Data Request: {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatName": Chat name  
+}  
+Return Value: {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"userChat": array contains user's chat  
+}  
+Error Code:  
+400: Cannot find chat with requested chat name  
+404: Cannot find user id   
+
+
+### 3. /createChat
+URL: /createChat  
+Method: POST  
+Description: Create a chat base on chat name  
+Data Request: {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatName": Chat name  
+}  
+Return Value: {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"newChat": First message of a chat  
+}  
+Error Code:  
+400: Cannot create with requested chat name  
+404: Cannot find user id  
 
 ### 4. /question
-Dùng để hỏi cohere  
-Dữ liệu json cần truyền: {"uid": "user_id", "chat name": "chat_name", "question": "question"}  
-Lưu ý về "chat name" đã được đề cập ở /create_chat  
-Mã trả về:  
-* 200: Cohere trả lời thành công
-* 400: Không tìm thấy đoạn chat có tên tương ứng
-* 404: Không tim thấy user id  
-* 504: Cohere không thể trả lời ngay lập tức
+URL: /question  
+Method: POST  
+Description: Questioning Cohere  
+Data Request: {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatName": Chat name,  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"question": Question  
+}  
+Return Value: {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"answer": Cohere response  
+}  
+Error Code:  
+400: Cannot find chat with requested chat name  
+404: Cannot find user id   
+504: Server is overloaded  
 
-### 5. /delete_chat
-Dùng để xoá một đoạn hội thoại  
-Dữ liệu json cần truyền: {"uid": "user_id", "chat name": "chat_name"}  
-Lưu ý về "chat name" đã được đề cập ở /create_chat  
-Mã trả về:  
-* 200: Xoá đoạn chat thành công
-* 404: Không tim thấy user id  
+### 5. /deleteChat
+URL: /deleteChat  
+Method: DELETE  
+Description: Deleta a chat base on chat name  
+Data Request: {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatName": Chat name  
+}  
+Return Value: {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"code": 200 (successfully deleted)  
+}  
+Error Code:  
+404: Cannot find user id  

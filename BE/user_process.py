@@ -189,7 +189,7 @@ def processCohere(profile, key):
         user_waiting_list["user_queue"].remove(f"{uid}-{questionid}")
 
         json_dict = profile['data']
-        chat_name = json_dict['chat name']
+        chat_name = json_dict['chatName']
         chat_ref = ref.child(uid).child('chat').child(chat_name)
 
         question = json_dict['question']
