@@ -17,8 +17,11 @@ export default function MainPageDesktop() {
   const [isOpenEditUserInformation, setIsOpenEditUserInformation] =
     useState(false);
   const [chatList, setChatList] = useState([]);
-
-  useEffect(() => {}, []);
+  const [editChatName, setEditChatName] = useState("");
+  const [inputChatName, setInputChatName] = useState("");
+  useEffect(() => {
+    getChatNameList();
+  }, []);
 
   useEffect(() => {
     setUserInfo(getCurrentUser());
@@ -47,9 +50,9 @@ export default function MainPageDesktop() {
 
   const createNewChat = () => {
     axios
-      .post("http://127.0.0.1:5000/create_chat", {
+      .post("createChat", {
         uid: userInfo.uid,
-        "chat name": "Test Chat 5",
+        "chat name": "Test ".concat(Math.floor(Math.random() * 100)).toString(),
       })
       .then((res) => {
         console.log(res);
@@ -59,17 +62,48 @@ export default function MainPageDesktop() {
       });
   };
 
-  const getChatList = () => {
+  const getChatNameList = () => {
     axios
-      .post("http://localhost:5000/get_chats", {
+      .post("getHistoricalChat", {
         uid: userInfo.uid,
       })
       .then((res) => {
         console.log(res);
+        const data = res["data"];
+        const listHistory = data["listHistoricalChats"];
+        setChatList(
+          listHistory.map((item) => {
+            return {
+              name: item,
+              isEdit: false,
+            };
+          })
+        );
       })
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const handleDeleteChat = (name) => {
+    axios
+      .post("handleDeleteChat", {
+        uid: userInfo.uid,
+        chatName: name,
+      })
+      .then((res) => {
+        console.log(res);
+        chatList.splice(chatList.indexOf(name), 1);
+        setChatList([...chatList]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleEditNameChat = (name) => {
+    setEditChatName(name);
+    setInputChatName(name);
   };
 
   return (
@@ -122,191 +156,61 @@ export default function MainPageDesktop() {
               <i class="fas fa-plus-circle"></i>
               <span>Add new chat</span>
             </div>
-            <button onClick={getChatList}>Test</button>
             <div class={`${styles["history_panel_title"]}`}>History</div>
             {/* <!-- History Panel --> */}
             <div class={`${styles["history_panel"]} flex-grow-1`}>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
+              {
+                // <!-- Chat Item -->
+                chatList.map((nameObj) => {
+                  if (nameObj.name === editChatName) nameObj.isEdit = true;
+                  else nameObj.isEdit = false;
+                  return (
+                    <div
+                      class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
+                    >
+                      <img
+                        src="img/chat_icon.png"
+                        class="me-2"
+                        alt="chat_icon"
+                      ></img>
+                      {nameObj.isEdit ? ( 
+                        <input
+                          type="text"
+                          class={`${styles["chat_name_edit"]} flex-grow-1`}
+                          onChange={(e) => setInputChatName(e.target.value)}
+                          value={inputChatName}
+                        />
+                      ) : (
+                        <span class="flex-grow-1">{nameObj.name}</span>
+                      )}
 
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
-              <div
-                class={`${styles["chat_item"]} chat_item_edit d-flex align-items-center`}
-              >
-                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                <span class="flex-grow-1">Cohere API</span>
-                <div class="d-none">
-                  <i class="fas fa-edit me-1"></i>
-                  <i class="fas fa-trash-alt"></i>
-                </div>
-              </div>
+                      {!nameObj.isEdit ? (
+                        <div class="d-none">
+                          <i
+                            class="fas fa-edit me-1"
+                            onClick={() => handleEditNameChat(nameObj.name)}
+                          ></i>
+                          <i
+                            class="fas fa-trash-alt"
+                            onClick={() => {
+                              handleDeleteChat(nameObj.name);
+                            }}
+                          ></i>
+                        </div>
+                      ) : (
+                        <div>
+                          <i class="fas fa-check me-2 ml-2"
+                          ></i>
+                          <i
+                            class="fas fa-times"
+                            onClick={() => setEditChatName("")}
+                          ></i>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              }
             </div>
             <div class={`${styles["line"]}`}></div>
           </div>
