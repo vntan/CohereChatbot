@@ -11,18 +11,19 @@ import time
 app = Flask(__name__)  
 
 '''
-get_chats
-Dùng để lấy thông tin người dùng khi người dùng đăng nhập thành công (tất cả các đoạn chat)
-Dữ liệu json cần truyền:
-{
-    "uid": "user_id"
+URL: /getHistoricalChat
+Method: POST
+Description: Get all of user's historical chat names
+Data Request: {
+    "uid": User's ID
 }
-Mã trả về:
-* 200: Thành công lấy về tất cả đoạn chat
-* 204: Tìm thấy user id nhưng không có đoạn chat nào được ghi nhận
-* 404: Không tim thấy user id  
+Return Value: {
+    "listHistoricalChats": array contains user's historical chat names
+}
+Error Code:
+404: Cannot find user id
 '''
-@app.get('/get_chats')
+@app.post('/getHistoricalChat')
 def get_information():
     json_dict = request.get_json()
     uid = json_dict['uid']
@@ -30,44 +31,37 @@ def get_information():
     try: 
         auth.get_user(uid)
     except:
-        return jsonify({
-            'status code': 404,
-            'message': 'Cannot find user id'
-        })
+        return 'Cannot find user id', 404
 
     all_user_chat = ref.child(uid).child('chat').get()
 
     if all_user_chat:
-        user_chats = {}
-        for key, value in all_user_chat.items():
-            user_chats[key] = list(value['conversation'].values())
-        return jsonify({
-            'status code': 200,
-            'message': 'Got user information',
-            'user chat': user_chats
-        })
+        all_user_chat = list(all_user_chat.keys())
     else:
-        return jsonify({
-            'status code': 204,
-            'message': 'No previous chat!'
-        })
+        all_user_chat = []
 
+    return jsonify({
+        'listHistoricalChats': all_user_chat
+    })
+        
 
 '''
-/get_chat
-Dùng để lấy một đoạn chat
-Dữ liệu json cần truyền:
+URL: /getOneChat
+Method: POST
+Description: Get one chat messages base on chat name
+Data Request:
 {
-    "uid": "user_id",
-    "chat name": "chat_name"
+    "uid": User's ID,
+    "chatName": Chat name
 }
-Lưu ý về "chat name" đã được đề cập ở /create_chat
-Mã trả về: 
-* 200: Thành công lấy về đoạn chat
-* 400: Không tìm thấy đoạn chat có tên tương ứng
-* 404: Không tim thấy user id  
+Return Value: {
+    "userChat": array contains user's chat
+}
+Error Code:
+400: Cannot find chat with requested chat name
+404: Cannot find user id 
 '''
-@app.get('/get_chat')
+@app.post('/getOneChat')
 def get_chat():
     json_dict = request.get_json()
     uid = json_dict['uid']
@@ -75,47 +69,38 @@ def get_chat():
     try: 
         auth.get_user(uid)
     except:
-        return jsonify({
-            'status code': 404,
-            'message': 'Cannot find user id'
-        })
+        return 'Cannot find user id', 404
 
-    chat_name = json_dict['chat name']
+    chat_name = json_dict['chatName']
 
     user_chat = ref.child(uid).child('chat').child(chat_name).child('conversation').get()
 
     if user_chat:
         user_chat = list(user_chat.values())
         return jsonify({
-            'status code': 200,
-            'message': 'Got user chat',
-            'user chat': user_chat
+            'userChat': user_chat
         })
     else:
-        return jsonify({
-            'status code': 400,
-            'message': 'No chat found',
-        })
+        return 'No chat found', 400
     
 
 '''
-/create_chat
-Dùng để tạo đoạn chat mới
-Dữ liệu json cần truyền:
+URL: /createChat
+Method: POST
+Description: Create a chat base on chat name
+Data Request:
 {
-    "uid": "user_id",
-    "chat name": "chat_name"
+    "uid": User's ID,
+    "chatName": Chat name
 }
-Lưu ý: "chat name" cần tránh những kí tự không được phép từ Firebase realtime database
-"If you create your own keys, they must be UTF-8 encoded, can be a maximum of 768 bytes, 
-and cannot contain ., $, #, [, ], /, or ASCII control characters 0-31 or 127. 
-You cannot use ASCII control characters in the values themselves, either."
-Mã trả về: 
-* 200: Tạo đoạn chat thành công
-* 400: Không thể tạo đoạn chat
-* 404: Không tim thấy user id 
+Return Value: {
+    "newChat": First message of a chat
+}
+Error Code:
+400: Cannot create with requested chat name
+404: Cannot find user id 
 '''
-@app.post('/create_chat')
+@app.post('/createChat')
 def create_chat():
     json_dict = request.get_json()
     uid = json_dict['uid']
@@ -123,12 +108,9 @@ def create_chat():
     try: 
         auth.get_user(uid)
     except:
-        return jsonify({
-            'status code': 404,
-            'message': 'Cannot find user id'
-        })
+        return 'Cannot find user id', 404
     
-    chat_name = json_dict['chat name']
+    chat_name = json_dict['chatName']
 
     all_chat_name = ref.child(uid).child('chat').get()
     if all_chat_name:
@@ -137,10 +119,7 @@ def create_chat():
         all_chat_name = []
 
     if chat_name in all_chat_name:
-        return jsonify({
-            'status code': 400,
-            'message': 'Create failed',
-        })
+        return 'Created failed', 400
     
     chat_ref = ref.child(uid).child('chat').child(chat_name)
 
@@ -148,26 +127,27 @@ def create_chat():
     chat_ref.child('summarized conversation').push('Cohere: Hello! What can I help you?')
 
     return jsonify({
-        'status code': 200,
-        'message': 'Create completed',
-        'new chat': 'Hello! What can I help you?'
+        'newChat': 'Hello! What can I help you?'
     })
 
 
 '''
-/question
-Dùng để hỏi cohere
+URL: /question
+Method: POST
+Description: Questioning Cohere
+Data Request:
 {
-    "uid": "user_id",
-    "chat name": "chat_name",
-    "question": "question"
+    "uid": User's ID,
+    "chatName": Chat name,
+    "question": Question
 }
-Lưu ý về "chat name" đã được đề cập ở /create_chat
-Mã trả về: 
-* 200: Cohere trả lời thành công
-* 400: Không tìm thấy đoạn chat có tên tương ứng
-* 404: Không tim thấy user id  
-* 504: Cohere không thể trả lời ngay lập tức
+Return Value: {
+    "answer": Cohere response
+}
+Error Code:
+400: Cannot find chat with requested chat name
+404: Cannot find user id 
+504: Server is overloaded
 '''
 @app.post('/question')
 def ask_question():
@@ -178,20 +158,14 @@ def ask_question():
     try: 
         auth.get_user(uid)
     except:
-        return jsonify({
-            'status code': 404,
-            'message': 'Cannot find user id'
-        })
+        return 'Cannot find user id', 404
     
 
-    chat_name = json_dict['chat name']
+    chat_name = json_dict['chatName']
     chat_ref = ref.child(uid).child('chat').child(chat_name)
 
     if not chat_ref.child('summarized conversation').get():
-        return jsonify({
-            'status code': 400,
-            'message': 'Cannot find chat'
-        })
+        return 'Cannot find chat', 400
     
     
     profile = {
@@ -223,31 +197,28 @@ def ask_question():
 
     if profile['code'] == 200:
         return jsonify({
-            'status code': 200,
-            'message': 'Complete',
             'answer': profile['answer']
         })
         
-    return jsonify({
-            'status code': 504,
-            'message': 'Server is overloaded',
-        })
+    return 'Server is overloaded', 504
 
 
 '''
-/delete_chat
-Dùng để xoá một đoạn hội thoại
-Dữ liệu json cần truyền:
+URL: /deleteChat
+Method: DELETE
+Description: Deleta a chat base on chat name
+Data Request:
 {
-    "uid": "user_id",
-    "chat name": "chat_name"
+    "uid": User's ID,
+    "chatName": Chat name
 }
-Lưu ý về "chat name" đã được đề cập ở /create_chat
-Mã trả về: 
-* 200: Xoá đoạn chat thành công
-* 404: Không tim thấy user id 
+Return Value: {
+    "code": 200 (successfully deleted)
+}
+Error Code:
+404: Cannot find user id 
 '''
-@app.delete('/delete_chat')
+@app.delete('/deleteChat')
 def detele_chat():
     json_dict = request.get_json()
 
@@ -256,19 +227,15 @@ def detele_chat():
     try: 
         auth.get_user(uid)
     except:
-        return jsonify({
-            'status code': 404,
-            'message': 'Cannot find user id'
-        })
+        return 'Cannot find user id', 404
     
 
-    chat_name = json_dict['chat name']
+    chat_name = json_dict['chatName']
 
     ref.child(uid).child('chat').child(chat_name).delete()
 
     return jsonify({
-        'status code': 200,
-        'message': 'Delete completed',
+        "code": 200,
     })
 
 if __name__ == '__main__':
