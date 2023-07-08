@@ -2,7 +2,7 @@
 
 Here is BE folder
 
-# Các api có thể gọi  
+# Callable API 
 
 ### 1. /getHistoricalChat
 URL: /getHistoricalChat  
