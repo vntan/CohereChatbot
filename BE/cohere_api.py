@@ -259,7 +259,7 @@ Return Value: {
 Error Code:
 404: Cannot find user id 
 '''
-@app.delete('/deleteChat')
+@app.post('/deleteChat')
 def detele_chat():
     json_dict = request.get_json()
 

@@ -4,37 +4,41 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./HistoricalChatsComponent.module.scss";
 import axios from "axios";
 
-export default function HistoricalChats({ isUpdateChats }) {
+export default function HistoricalChats({ addChatName = { chatID: "", chatName: "" }, updateChatName = { chatID: "", rename: "" }, onChatClick = () => {}, onCreateChat = () => {}, onDeleteChat = () => {}, onEditChat = () => {} }) {
     const [chatList, setChatList] = useState([]);
-    const [editChatName, setEditChatName] = useState("");
-    const [deleteChatName, setDeleteChatName] = useState("");
     const [inputChatName, setInputChatName] = useState("");
     const [isProcessAdd, setProcessAdd] = useState(false);
+
+    const [editChatID, setEditChatID] = useState("");
     const [isProcessEdit, setProcessEdit] = useState(false);
-    const [isProcessDelete, setProcessDetele] = useState(false);
+
+    const [deleteChatID, setDeleteID] = useState("");
+    const [isProcessDelete, setProcessDelete] = useState(false);
 
     useEffect(() => {
         getChatNameList();
     }, []);
 
-    const createNewChat = (name) => {
-        setProcessAdd(true);
-        axios
-            .post("createChat", {
-                uid: getCurrentUser().uid,
-                chatName: name,
-            })
-            .then((res) => {
-                console.log(res);
-                chatList.push(name);
+    useEffect(() => {
+        if (updateChatName.chatID && updateChatName.chatID != "") {
+            if (updateChatName.rename && updateChatName.rename != "") {
+                const index = chatList.findIndex((item) => item.chatID === updateChatName.chatID);
+                if (index >= 0) chatList[index] = updateChatName.rename;
+            }
+        }
+    }, [updateChatName]);
+
+    useEffect(() => {
+        if (addChatName.chatID && addChatName.chatID != "") {
+            if (addChatName.chatName && addChatName.chatName != "") {
+                chatList.push({
+                    ...addChatName
+                });
                 setChatList([...chatList]);
-                setProcessAdd(false);
-            })
-            .catch((err) => {
-                console.log(err);
-                setProcessAdd(false);
-            });
-    };
+            }
+        }
+    }, [addChatName]);
+
 
     const getChatNameList = () => {
         axios
@@ -53,53 +57,67 @@ export default function HistoricalChats({ isUpdateChats }) {
     };
 
     const handleCreateChatClick = () => {
-        //TODO
-        createNewChat("Test " + Math.floor(Math.random() * 100).toString());
+        onCreateChat();
     };
 
-    const handleDeleteChat = (name) => {
-        setProcessDetele(true);
-        setDeleteChatName(name);
+    const handleDeleteChat = (nameChatObj, pos) => {
+        setProcessDelete(true);
+        setDeleteID(nameChatObj.chatID);
         axios
             .post("deleteChat", {
                 uid: getCurrentUser().uid,
-                chatName: name,
+                chatID: nameChatObj.chatID,
             })
             .then((res) => {
-                chatList.splice(chatList.indexOf(name), 1);
+                chatList.splice(pos, 1);
                 setChatList([...chatList]);
-                setProcessDetele(false);
-                setDeleteChatName("");
+                setProcessDelete(false);
+                setDeleteID("");
+                onDeleteChat(nameChatObj);
             })
             .catch((err) => {
                 console.log(err);
-                setProcessDetele(false);
-                setDeleteChatName("");
+                setProcessDelete(false);
+                setDeleteID("");
             });
     };
 
-    const handleEditNameChat = (name) => {
-        setEditChatName(name);
-        setInputChatName(name);
+    const handleEditNameChat = (nameChatObj) => {
+        setEditChatID(nameChatObj.chatID);
+        setInputChatName(nameChatObj.chatName);
     };
 
-    const handleConfirmEditNameChat = (name) => {
-        //TODO
-        setProcessEdit(true);
-        setTimeout(() => {
-            
-            setEditChatName("");
-            setProcessEdit(false);
-        }, 3000);
+    const handleCancelNameChat = () => {
+        setEditChatID("");
+    };
 
-        /* Tham khảo
-            setProcessEdit(true);
-            const index = chatList.indexOf(name)
-            if (index >= 0) chatList[index] = inputChatName;
-            setChatList([...chatList]);
-            setEditChatName("");
-            setProcessEdit(false); 
-        */
+    const handleConfirmEditNameChat = (nameChatObj, pos) => {
+        if (inputChatName === nameChatObj.chatName || inputChatName == "") {
+            setProcessEdit(false);
+            setEditChatID("");
+            return;
+        }
+
+        setProcessEdit(true);
+        setEditChatID(nameChatObj.chatID);
+        axios
+            .post("renameChat", {
+                uid: getCurrentUser().uid,
+                chatID: nameChatObj.chatID,
+                newChatName: inputChatName,
+            })
+            .then((res) => {
+                chatList[pos].chatName = inputChatName;
+                setChatList([...chatList]);
+                setProcessEdit(false);
+                setEditChatID("");
+                onEditChat(nameChatObj);
+            })
+            .catch((err) => {
+                console.log(err);
+                setProcessEdit(false);
+                setEditChatID("");
+            });
     };
 
     return (
@@ -112,35 +130,62 @@ export default function HistoricalChats({ isUpdateChats }) {
             <div class={`${styles["history_panel"]} flex-grow-1`}>
                 {
                     // <!-- Chat Item -->
-                    chatList.map((nameChat) => {
-                        let isEdit = false;
-                        if (nameChat === editChatName) isEdit = true;
-                        return (
-                            <div class={`${styles["chat_item"]} ${(isProcessDelete && nameChat == deleteChatName) || (isProcessEdit && nameChat == editChatName) ? styles["loading-cursor"] : ""} chat_item_edit d-flex align-items-center`}>
-                                <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
-                                {isEdit ? (
-                                    <input type="text" class={`flex-grow-1`} onChange={(e) => setInputChatName(e.target.value)} value={inputChatName} disabled={isProcessEdit} />
-                                ) : (
-                                    <span class={`${isProcessDelete && nameChat == deleteChatName ? styles["text-decoration-line-through"] : ""} flex-grow-1`}>{nameChat}</span>
-                                )}
+                    chatList.map((nameChatObj, pos) => {
+                        const isEdit = editChatID === nameChatObj.chatID;
+                        const isIDChatDelete = deleteChatID === nameChatObj.chatID;
+                        const isIDChatEdit = editChatID === nameChatObj.chatID;
 
-                                {!isEdit ? (
-                                    <div class={`${isProcessDelete || isProcessEdit ? "" : styles["func"]} d-none`}>
-                                        <i class="fas fa-edit me-1" onClick={() => handleEditNameChat(nameChat)}></i>
-                                        <i
-                                            class="fas fa-trash-alt"
-                                            onClick={() => {
-                                                handleDeleteChat(nameChat);
-                                            }}
-                                        ></i>
-                                    </div>
-                                ) : (
-                                    <div class={`${styles["edit"]} ${isProcessDelete || isProcessEdit ? "d-none" : ""}`}>
-                                        <i class="fas fa-check me-2 ml-2" onClick={() => handleConfirmEditNameChat(nameChat)}></i>
-                                        <i class="fas fa-times" onClick={() => setEditChatName("")}></i>
-                                    </div>
-                                )}
-                            </div>
+                        const isLoading = (isProcessDelete && isIDChatDelete) || (isProcessEdit && isIDChatEdit);
+                        return (
+                            <>
+                                <div
+                                    onClick={(e) => {
+                                        if (isIDChatDelete || isIDChatEdit) return;
+                                        onChatClick(nameChatObj);
+                                    }}
+                                    class={`${styles["chat_item"]} ${isLoading ? styles["loading-cursor"] : ""} chat_item_edit d-flex align-items-center`}>
+                                    <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
+                                    {!isEdit ? (
+                                        <>
+                                            <span class={`${isProcessDelete && isIDChatDelete ? styles["text-decoration-line-through"] : ""} flex-grow-1`}>{nameChatObj.chatName}</span>
+
+                                            <div class={`${isProcessDelete || isProcessEdit ? "d-none" : styles["func"]} d-none`}>
+                                                <i
+                                                    class="fas fa-edit me-1"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleEditNameChat(nameChatObj);
+                                                    }}></i>
+                                                <i
+                                                    class="fas fa-trash-alt"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDeleteChat(nameChatObj, pos);
+                                                    }}></i>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <input type="text" class={`flex-grow-1`} onChange={(e) => setInputChatName(e.target.value)} value={inputChatName} disabled={isProcessEdit} />
+
+                                            <div class={` ${isProcessDelete || isProcessEdit ? "d-none" : styles["edit"]}`}>
+                                                <i
+                                                    class="fas fa-check me-2 ml-2"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleConfirmEditNameChat(nameChatObj, pos);
+                                                    }}></i>
+                                                <i
+                                                    class="fas fa-times"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleCancelNameChat();
+                                                    }}></i>
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+                            </>
                         );
                     })
                 }

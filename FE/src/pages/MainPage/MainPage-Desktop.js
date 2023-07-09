@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-
 import { logout, getCurrentUser } from "../../utilities/firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./MainPage-Desktop.module.scss";
@@ -16,24 +14,44 @@ export default function MainPageDesktop() {
     const [isOpenAboutUs, setIsOpenAboutUs] = useState(false);
     const [isOpenUserInformation, setIsOpenUserInformation] = useState(false);
     const [isOpenEditUserInformation, setIsOpenEditUserInformation] = useState(false);
-    const [isUpdateHistoricalListChats, setIsUpdateHistoricalListChats] = useState(false);
+    const [updateChatName, setUpdateChatName] = useState({});
+    const [addChatName, setAddChatName] = useState({});
+    const [nameChatObj, setNameChatObj] = useState({});
 
     useEffect(() => {
         setUserInfo(getCurrentUser());
     }, [isOpenEditUserInformation]);
-
-
 
     const handleUserInformationEditClick = () => {
         setIsOpenUserInformation(false);
         setIsOpenEditUserInformation(true);
     };
 
+    const handleOnChatClick = (nameObj) => {
+        setNameChatObj({
+            ...nameObj,
+        });
+    };
 
+    const handleOnCreateChat = () => {
+        setNameChatObj({});
+    };
 
+    const handleOnDeleteChat = (nameObj) => {
+        if (nameObj.chatID === nameChatObj.chatID){
+            setNameChatObj({});
+        }
+    };
 
+    const handleOnEditChat = (nameObj) => {
 
+        if (nameObj.chatID === nameChatObj.chatID){
+            setNameChatObj({
+                ...nameObj,
+            });
+        }
 
+    };
 
     return (
         <div class="container-fluid">
@@ -58,8 +76,14 @@ export default function MainPageDesktop() {
 
                     <div class={`${styles["container-historical-chats"]} flex-grow-1`}>
                         <div class={`${styles["line"]}`}></div>
-                       
-                        <HistoricalChats isUpdateChats={isUpdateHistoricalListChats}></HistoricalChats>
+
+                        <HistoricalChats
+                            addChatName={addChatName}
+                            updateChatName={updateChatName}
+                            onChatClick={handleOnChatClick}
+                            onCreateChat={handleOnCreateChat}
+                            onDeleteChat={handleOnDeleteChat}
+                            onEditChat={handleOnEditChat}></HistoricalChats>
 
                         <div class={`${styles["line"]}`}></div>
                     </div>
@@ -75,10 +99,9 @@ export default function MainPageDesktop() {
                         <h1>Cohere Chatbot</h1>
                         <img src="./img/thunder.png" alt="thunder" />
                     </div>
-                    
-                    <ChatbotDialog></ChatbotDialog>
 
-
+                    <ChatbotDialog setOnAddChatName={setAddChatName} setOnUpdateChatName={setUpdateChatName} nameChat={nameChatObj} >
+                    </ChatbotDialog>
                 </div>
 
                 <AboutUsModal show={isOpenAboutUs} onClose={() => setIsOpenAboutUs(false)}></AboutUsModal>
@@ -86,8 +109,7 @@ export default function MainPageDesktop() {
                     show={isOpenUserInformation}
                     userInfo={userInfo}
                     onClose={() => setIsOpenUserInformation(false)}
-                    onEditClick={handleUserInformationEditClick}
-                ></UserInformationModal>
+                    onEditClick={handleUserInformationEditClick}></UserInformationModal>
 
                 {/* Edit User Modal Here */}
                 {isOpenEditUserInformation && <EditUserModal userInfo={getCurrentUser()} onClose={() => setIsOpenEditUserInformation(false)}></EditUserModal>}
