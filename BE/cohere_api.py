@@ -44,6 +44,7 @@ def get_information():
                 "chatName": value["chat name"]
             })
 
+    history_chats.reverse()
     return jsonify({
         'listHistoricalChats': history_chats
     })
@@ -98,6 +99,7 @@ Data Request:
     "chatName": Chat name
 }
 Return Value: {
+    "chatID": Chat ID,
     "newChat": First message of a chat
 }
 Error Code:
@@ -115,7 +117,7 @@ def create_chat():
     
     chat_name = json_dict['chatName']
 
-    chat_id = uuid.uuid4().hex
+    chat_id = str(uuid.uuid1())
     
     chat_ref = ref.child(uid).child('chat').child(chat_id)
 
@@ -246,7 +248,7 @@ def rename_chat():
 
 '''
 URL: /deleteChat
-Method: DELETE
+Method: POST
 Description: Deleta a chat base on chat name
 Data Request:
 {
@@ -259,7 +261,7 @@ Return Value: {
 Error Code:
 404: Cannot find user id 
 '''
-@app.delete('/deleteChat')
+@app.post('/deleteChat')
 def detele_chat():
     json_dict = request.get_json()
 

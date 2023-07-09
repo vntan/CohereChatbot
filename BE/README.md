@@ -43,6 +43,7 @@ Data Request: {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatName": Chat name  
 }  
 Return Value: {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatID": Chat ID,  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"newChat": First message of a chat  
 }  
 Error Code:   
@@ -85,7 +86,7 @@ Error Code:
 
 ### 6. /deleteChat
 URL: /deleteChat  
-Method: DELETE  
+Method: POST  
 Description: Delete a chat base on chat name  
 Data Request: {  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
