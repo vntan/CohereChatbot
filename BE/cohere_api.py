@@ -7,6 +7,7 @@ from user_process import user_waiting_list, api_keys, task_done, cred_obj, defau
 from queue import Queue
 from threading import Thread
 import time
+import uuid
 
 app = Flask(__name__)  
 
@@ -18,7 +19,7 @@ Data Request: {
     "uid": User's ID
 }
 Return Value: {
-    "listHistoricalChats": array contains user's historical chat names
+    "listHistoricalChats": array contains user's historical chat names and ids
 }
 Error Code:
 404: Cannot find user id
@@ -35,30 +36,33 @@ def get_information():
 
     all_user_chat = ref.child(uid).child('chat').get()
 
+    history_chats = []
     if all_user_chat:
-        all_user_chat = list(all_user_chat.keys())
-    else:
-        all_user_chat = []
+        for key, value in all_user_chat.items():
+            history_chats.append({
+                "chatID": key,
+                "chatName": value["chat name"]
+            })
 
     return jsonify({
-        'listHistoricalChats': all_user_chat
+        'listHistoricalChats': history_chats
     })
         
 
 '''
 URL: /getOneChat
 Method: POST
-Description: Get one chat messages base on chat name
+Description: Get one chat messages base on chat ID
 Data Request:
 {
     "uid": User's ID,
-    "chatName": Chat name
+    "chatID": Chat ID
 }
 Return Value: {
     "userChat": array contains user's chat
 }
 Error Code:
-400: Cannot find chat with requested chat name
+400: Cannot find chat with requested chat ID
 404: Cannot find user id 
 '''
 @app.post('/getOneChat')
@@ -71,9 +75,9 @@ def get_chat():
     except:
         return 'Cannot find user id', 404
 
-    chat_name = json_dict['chatName']
+    chat_id = json_dict['chatID']
 
-    user_chat = ref.child(uid).child('chat').child(chat_name).child('conversation').get()
+    user_chat = ref.child(uid).child('chat').child(chat_id).child('conversation').get()
 
     if user_chat:
         user_chat = list(user_chat.values())
@@ -97,7 +101,6 @@ Return Value: {
     "newChat": First message of a chat
 }
 Error Code:
-400: Cannot create with requested chat name
 404: Cannot find user id 
 '''
 @app.post('/createChat')
@@ -112,21 +115,16 @@ def create_chat():
     
     chat_name = json_dict['chatName']
 
-    all_chat_name = ref.child(uid).child('chat').get()
-    if all_chat_name:
-        all_chat_name = list(all_chat_name.keys())
-    else:
-        all_chat_name = []
-
-    if chat_name in all_chat_name:
-        return 'Created failed', 400
+    chat_id = uuid.uuid4().hex
     
-    chat_ref = ref.child(uid).child('chat').child(chat_name)
+    chat_ref = ref.child(uid).child('chat').child(chat_id)
 
+    chat_ref.child('chat name').set(chat_name)
     chat_ref.child('conversation').push('Hello! What can I help you?')
     chat_ref.child('summarized conversation').push('Cohere: Hello! What can I help you?')
 
     return jsonify({
+        'chatID': chat_id,
         'newChat': 'Hello! What can I help you?'
     })
 
@@ -138,14 +136,14 @@ Description: Questioning Cohere
 Data Request:
 {
     "uid": User's ID,
-    "chatName": Chat name,
+    "chatID": Chat ID,
     "question": Question
 }
 Return Value: {
     "answer": Cohere response
 }
 Error Code:
-400: Cannot find chat with requested chat name
+400: Cannot find chat with requested chat ID
 404: Cannot find user id 
 504: Server is overloaded
 '''
@@ -161,10 +159,10 @@ def ask_question():
         return 'Cannot find user id', 404
     
 
-    chat_name = json_dict['chatName']
-    chat_ref = ref.child(uid).child('chat').child(chat_name)
+    chat_id = json_dict['chatID']
+    chat_ref = ref.child(uid).child('chat').child(chat_id)
 
-    if not chat_ref.child('summarized conversation').get():
+    if not chat_ref.child('chat name').get():
         return 'Cannot find chat', 400
     
     
@@ -204,13 +202,56 @@ def ask_question():
 
 
 '''
+URL: /renameChat
+Method: POST
+Description: Deleta a chat base on chat name
+Data Request:
+{
+    "uid": User's ID,
+    "chatID": Chat ID,
+    "newChatName": New chat name
+}
+Return Value: {
+    "code": 200 (successfully renamed)
+}
+Error Code:
+400: Cannot find chat with requested chat ID
+404: Cannot find user id 
+'''
+@app.post('/renameChat')
+def rename_chat():
+    json_dict = request.get_json()
+
+    uid = json_dict['uid']
+
+    try: 
+        auth.get_user(uid)
+    except:
+        return 'Cannot find user id', 404
+    
+    chat_id = json_dict['chatID']
+    chat_ref = ref.child(uid).child('chat').child(chat_id)
+
+    if not chat_ref.child('chat name').get():
+        return 'Cannot find chat', 400
+    
+    new_chat_name = json_dict['newChatName']
+
+    chat_ref.child('chat name').set(new_chat_name)
+
+    return jsonify({
+        "code": 200,
+    })
+
+
+'''
 URL: /deleteChat
 Method: DELETE
 Description: Deleta a chat base on chat name
 Data Request:
 {
     "uid": User's ID,
-    "chatName": Chat name
+    "chatID": Chat ID
 }
 Return Value: {
     "code": 200 (successfully deleted)
@@ -230,9 +271,9 @@ def detele_chat():
         return 'Cannot find user id', 404
     
 
-    chat_name = json_dict['chatName']
+    chat_id = json_dict['chatID']
 
-    ref.child(uid).child('chat').child(chat_name).delete()
+    ref.child(uid).child('chat').child(chat_id).delete()
 
     return jsonify({
         "code": 200,
