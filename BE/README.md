@@ -12,7 +12,7 @@ Data Request: {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID  
 }  
 Return Value: {  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"listHistoricalChats": array contains user's historical chat names  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"listHistoricalChats": array contains user's historical chat names and ids  
 }  
 Error Code:  
 404: Cannot find user id  
@@ -24,13 +24,13 @@ Method: POST
 Description: Get one chat messages base on chat name  
 Data Request: {  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatName": Chat name  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatID": Chat ID  
 }  
 Return Value: {  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"userChat": array contains user's chat  
 }  
 Error Code:  
-400: Cannot find chat with requested chat name  
+400: Cannot find chat with requested chat ID  
 404: Cannot find user id   
 
 
@@ -45,8 +45,7 @@ Data Request: {
 Return Value: {  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"newChat": First message of a chat  
 }  
-Error Code:  
-400: Cannot create with requested chat name  
+Error Code:   
 404: Cannot find user id  
 
 ### 4. /question
@@ -55,21 +54,39 @@ Method: POST
 Description: Questioning Cohere  
 Data Request: {  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatName": Chat name,  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatID": Chat ID,  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"question": Question  
 }  
 Return Value: {  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"answer": Cohere response  
 }  
 Error Code:  
-400: Cannot find chat with requested chat name  
-404: Cannot find user id   
+400: Cannot find chat with requested chat ID  
+404: Cannot find user id  
 504: Server is overloaded  
 
-### 5. /deleteChat
+
+### 5. /renameChat
+URL: /renameChat  
+Method: POST  
+Description: Deleta a chat base on chat name  
+Data Request: {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatID": Chat ID,  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"newChatName": New chat name  
+}  
+Return Value: {  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"code": 200 (successfully renamed)  
+}  
+Error Code:  
+400: Cannot find chat with requested chat ID  
+404: Cannot find user id   
+
+
+### 6. /deleteChat
 URL: /deleteChat  
 Method: DELETE  
-Description: Deleta a chat base on chat name  
+Description: Delete a chat base on chat name  
 Data Request: {  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatName": Chat name  
