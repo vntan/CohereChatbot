@@ -1,19 +1,19 @@
 import React from 'react'
-import { logout } from '../../utilities/firebase'
-
+import styles from './MainPage.module.scss'
+import MainPageDesktop from './MainPage-Desktop'
+import MainPageMobile from './MainPage-Mobile';
 
 export default function MainPage() {
-  const handleSignOut = () => {
-    logout();
+    const [width, setWidth] = React.useState(window.innerWidth);
+    const breakpoint = 576;
 
-  }
+    React.useEffect(() => {
+        const handleWindowResize = () => setWidth(window.innerWidth)
+        window.addEventListener("resize", handleWindowResize);
+    
+        // Return a function from the effect that removes the event listener
+        return () => window.removeEventListener("resize", handleWindowResize);
+      }, []);
 
-  return (
-    <div>
-      MainPage
-
-      <button onClick={handleSignOut}>Hello</button>
-    </div>
-
-  )
+      return width < breakpoint ? <MainPageMobile/> : <MainPageDesktop />;
 }
