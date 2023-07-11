@@ -1,11 +1,6 @@
-from cohere_class import CoHere
-
-import firebase_admin
-from firebase_admin import auth
-from firebase_admin import db
+from utilities.cohere_apis import CoHere
 from threading import Thread
 import time
-
 
 
 user_waiting_list = {
@@ -13,28 +8,56 @@ user_waiting_list = {
     'users': {}
 }
 
+finished_serve = False
+
+
+def answerUserQuestion(uid, chatID, question):
+    return None
+    # def answerProcess():
+    #     profile = {
+    #         'isServed': False,
+    #         'data': {
+    #             'uid': uid,
+    #             'chatID': chatID,
+    #             'question': question
+    #         },
+    #         'status': False,
+    #         'timeout': time.time()
+    #     }
+    #     if uid not in user_waiting_list['users'].keys():
+    #         user_waiting_list['users'][uid] = {}
+
+    #     idQuestion = str(time.time())
+    #     user_waiting_list["user_queue"].append(f"{uid}-{idQuestion}")
+    #     user_waiting_list['users'][uid][idQuestion] = profile
+
+    #     while not user_waiting_list['users'][uid][idQuestion]["status"]:
+    #         time.sleep(1)
+
+    #     profile = user_waiting_list['users'][uid][idQuestion].copy()
+    #     num_questions = len(user_waiting_list['users'][uid].keys())
+    #     if num_questions == 1: user_waiting_list['users'].pop(uid)
+    #     else: user_waiting_list['users'][uid].pop(idQuestion)
+
+    #     if profile['code'] == 200:
+    #         return profile['answer']
+    #     else: return None
+
+
+
 api_keys = [
-    {"key": "t7PsmTR4WNiJDsYIGaUqzK8XFF2M8EAdxDNXtHqk", 
+    {"key": "t7PsmTR4WNiJDsYIGaUqzK8XFF2M8EAdxDNXtHqk",
      'count': 5, 'ttlc': -1,
-     'estimateGeneration': 5000, 'ttlg': -1}, 
-     {"key": "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq", 
+     'estimateGeneration': 5000, 'ttlg': -1},
+    {"key": "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq",
      'count': 5, 'ttlc': -1,
      'estimateGeneration': 5000, 'ttlg': -1}
 ]
 
-task_done = False
-
-cred_obj = firebase_admin.credentials.Certificate('./coherechatbot.json')
-default_app = firebase_admin.initialize_app(cred_obj, {
-	'databaseURL':'https://coherechatbot-default-rtdb.asia-southeast1.firebasedatabase.app/'
-	})
-
-ref = db.reference("/")
-   
-
 
 def delete_indicator(text):
     return text.replace("You: ", "").replace("Cohere: ", "")
+
 
 def fill_slot(user_waiting_list, temp_queue, result, max_users):
     for user in temp_queue:
@@ -44,16 +67,18 @@ def fill_slot(user_waiting_list, temp_queue, result, max_users):
 
         if user_waiting_list["users"][userID][questionID]["isServed"]:
             continue
-            
+
         result.append({
             'userID': userID,
             'questionID': questionID,
             'data': user_waiting_list["users"][userID][questionID]["data"],
         })
-        
-        if len(result) == max_users: break
+
+        if len(result) == max_users:
+            break
 
     return result
+
 
 def add_user(user, result):
     user_str = user.split('-')
@@ -71,6 +96,7 @@ def add_user(user, result):
 
     return result
 
+
 def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_limit=5, timeout=300):
 
     timeout_list = []
@@ -80,7 +106,8 @@ def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_lim
     num_del = 0
 
     for user in user_waiting_list["user_queue"]:
-        if len(result) == max_users: break
+        if len(result) == max_users:
+            break
 
         user_str = user.split('-')
         userID = user_str[0]
@@ -118,8 +145,8 @@ def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_lim
                     continue
 
                 time_delta = user_waiting_list["users"][userID][questionID]["time"] - \
-                                user_waiting_list["users"][waited_userID][waited_questionID]["time"]
-                
+                    user_waiting_list["users"][waited_userID][waited_questionID]["time"]
+
                 if time_delta > time_limit and len(result) < max_users:
                     result.append({
                         'userID': waited_userID,
@@ -127,16 +154,18 @@ def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_lim
                         'data': user_waiting_list["users"][waited_userID][waited_questionID]["data"],
                     })
                     num_del += 1
-                else: break
+                else:
+                    break
 
-        if len(result) == max_users: break
+        if len(result) == max_users:
+            break
 
         result.append({
             'userID': userID,
             'questionID': questionID,
             'data': user_waiting_list["users"][userID][questionID]["data"],
         })
-    
+
     if len(result) < max_users:
         for _ in range(num_del):
             temp_queue.pop(0)
@@ -144,9 +173,12 @@ def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_lim
 
     return result, timeout_list
 
+
 '''
 Đếm API key cho hiện có để process
 '''
+
+
 def processAPIKey():
     global api_keys
 
@@ -156,8 +188,8 @@ def processAPIKey():
             key["ttlc"] = time.time()
 
         if key["count"] == 0 and key["ttlc"] != -1:
-            delta = (time.time() -  key["ttlc"])
-            if delta > 60:  
+            delta = (time.time() - key["ttlc"])
+            if delta > 60:
                 key["ttlc"] = -1
                 key["count"] = 5
 
@@ -165,19 +197,22 @@ def processAPIKey():
             key["ttlg"] = time.time()
 
         if key["estimateGeneration"] == 0 and key["ttlg"] != -1:
-            delta = (time.time() -  key["ttlg"])
-            if delta > 2592000:  
+            delta = (time.time() - key["ttlg"])
+            if delta > 2592000:
                 key["ttlg"] = -1
                 key["estimateGeneration"] = 5000
-            
-       
+
         if key["count"] > 0 and key["estimateGeneration"] > 0:
-            APIs_available += [key["key"]] * min(key["count"], key["estimateGeneration"])
+            APIs_available += [key["key"]] * \
+                min(key["count"], key["estimateGeneration"])
     return APIs_available
+
 
 '''
 Xử lí một user trong process_queue
 '''
+
+
 def processCohere(profile, key):
     global user_waiting_list, api_keys
 
@@ -203,16 +238,16 @@ def processCohere(profile, key):
 
         if summarized:
             chat_ref.child('summarized conversation').delete()
-            
+
             for i in range(len(conv_list)):
                 chat_ref.child('summarized conversation').push(conv_list[i])
-        
-        else: 
+
+        else:
             chat_ref.child('summarized conversation').push(conv_list[-2])
             chat_ref.child('summarized conversation').push(conv_list[-1])
 
         for api in api_keys:
-            if api["key"] == key: 
+            if api["key"] == key:
                 api["count"] -= 1
                 api["estimateGeneration"] -= 1
 
@@ -226,9 +261,12 @@ def processCohere(profile, key):
 
     print("Terminate process uid")
 
+
 '''
 Xử lí một user quá thời gian cho phép trong db
 '''
+
+
 def processTimeout(profile):
     global user_waiting_list
 
@@ -242,28 +280,32 @@ def processTimeout(profile):
 
     print("Terminate process uid timeout")
 
+
 '''
 Xử lí chính cho question
 '''
-def process_main():
 
-    global task_done
+
+def serving_user():
+
+    global finished_serve
     global user_waiting_list
-    
-    while True:
-        if task_done: break
 
-        #process the api keys
+    while True:
+        if finished_serve:
+            break
+
+        # process the api keys
         api_keys = processAPIKey()
-        
-        if len(api_keys) == 0: 
+
+        if len(api_keys) == 0:
             print('Relax Cohere API')
             time.sleep(1)
             continue
 
-        
         max_users = len(api_keys)
-        profiles_queue, timeout_queue = select_user_to_serve(user_waiting_list, max_users)
+        profiles_queue, timeout_queue = select_user_to_serve(
+            user_waiting_list, max_users)
 
         process_thread = []
         for profile, key in zip(profiles_queue, api_keys):
@@ -275,9 +317,8 @@ def process_main():
             t = Thread(target=processTimeout, args=(profile,))
             process_thread.append(t)
             t.start()
-        
+
         for process in process_thread:
             process.join()
 
     print("Terminate process main")
-
