@@ -296,7 +296,11 @@ def processCohere(profile, key):
 '''
 Xử lí một user quá thời gian cho phép trong db
 '''
-
+#
+def del_timeout_user(uid, questionid):
+    global wait_list
+    wait_list.pop(f"{uid}-{questionid}", None)
+#
 
 def processTimeout(profile):
     global user_waiting_list
@@ -309,6 +313,9 @@ def processTimeout(profile):
     user_waiting_list['users'][uid][questionid]['code'] = 504
     user_waiting_list['users'][uid][questionid]['status'] = True
 
+    #
+    del_timeout_user(uid, questionid)
+    #
     print("Terminate process uid timeout")
 
 
