@@ -174,37 +174,7 @@ def ask_question():
     except Exception as error:
         return str(error), 504
 
-    # profile = {
-    #     'isServed': False,
-    #     'data': json_dict,
-    #     'status': False,
-    #     'time': time.time()
-    # }
-
-    # global user_waiting_list
-
-    # if uid not in user_waiting_list['users'].keys():
-    #     user_waiting_list['users'][uid] = {}
-
-    # idQuestion = str(time.time())
-    # user_waiting_list["user_queue"].append(f"{uid}-{idQuestion}")
-    # user_waiting_list['users'][uid][idQuestion] = profile
-
-    # while not user_waiting_list['users'][uid][idQuestion]["status"]:
-    #     time.sleep(1)
-
-    # profile = user_waiting_list['users'][uid][idQuestion].copy()
-    # num_questions = len(user_waiting_list['users'][uid].keys())
-    # if num_questions == 1: user_waiting_list['users'].pop(uid)
-    # else: user_waiting_list['users'][uid].pop(idQuestion)
-
-    # if profile['code'] == 200:
-    #     return jsonify({
-    #         'answer': profile['answer']
-    #     })
-
-    # return 'Server is overloaded', 504
-@apis.post('/status')
+@apis.get('/status')
 def get_status():
     return {
         'time': time.ctime(time.time()),

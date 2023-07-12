@@ -42,7 +42,7 @@ export default function HistoricalChats({ addChatName = { chatID: "", chatName: 
 
     const getChatNameList = () => {
         axios
-            .post("getHistoricalChat", {
+            .post("apis/getHistoricalChat", {
                 uid: getCurrentUser().uid,
             })
             .then((res) => {
@@ -64,7 +64,7 @@ export default function HistoricalChats({ addChatName = { chatID: "", chatName: 
         setProcessDelete(true);
         setDeleteID(nameChatObj.chatID);
         axios
-            .post("deleteChat", {
+            .post("apis/deleteChat", {
                 uid: getCurrentUser().uid,
                 chatID: nameChatObj.chatID,
             })
@@ -101,7 +101,7 @@ export default function HistoricalChats({ addChatName = { chatID: "", chatName: 
         setProcessEdit(true);
         setEditChatID(nameChatObj.chatID);
         axios
-            .post("renameChat", {
+            .post("apis/renameChat", {
                 uid: getCurrentUser().uid,
                 chatID: nameChatObj.chatID,
                 newChatName: inputChatName,
