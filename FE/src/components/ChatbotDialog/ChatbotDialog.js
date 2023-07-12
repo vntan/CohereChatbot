@@ -57,7 +57,7 @@ export default function ChatbotDialog({ setOnAddChatName, setOnUpdateChatName, n
         setIsWaitingAnswer(false);
         setLoadingChat(true);
         axios
-            .post("getOneChat", {
+            .post("apis/loadChat", {
                 uid: getCurrentUser().uid,
                 chatID: nameChatObj.chatID,
             })
@@ -113,7 +113,7 @@ export default function ChatbotDialog({ setOnAddChatName, setOnUpdateChatName, n
         if (isProcessAddTitle || titleInput == "") return;
         setProcessAddTitle(true);
         axios
-            .post("createChat", {
+            .post("apis/createChat", {
                 uid: getCurrentUser().uid,
                 chatName: titleInput,
             })
@@ -145,7 +145,7 @@ export default function ChatbotDialog({ setOnAddChatName, setOnUpdateChatName, n
 
         const current_chat = { ...nameChatObj };
         axios
-            .post("question", {
+            .post("apis/question", {
                 uid: getCurrentUser().uid,
                 chatID: current_chat.chatID,
                 question: question,
