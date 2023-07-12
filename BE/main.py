@@ -1,6 +1,7 @@
 from flask import Flask, Blueprint
 from app_apis import apis
-from user_serve import finished_serve, serving_user
+import user_serve
+from user_serve import serving_user
 from queue import Queue
 from threading import Thread
 
@@ -8,10 +9,11 @@ app = Flask(__name__)
 
 
 if __name__ == '__main__':
-    # q = Queue()
+    q = Queue()
     t = Thread(target=serving_user, args=())
     t.start()
     app.register_blueprint(apis)
-    app.run(debug=True)   
-    finished_serve = True
+    app.run(debug=False)   
+    q.join()
+    user_serve.finished_serve = True
     t.join()

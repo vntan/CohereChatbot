@@ -1,7 +1,7 @@
 from utilities.cohere_apis import CoHere
 from threading import Thread
 import time
-
+from utilities.Firebase.firebase_config import auth, db
 
 user_waiting_list = {
     'user_queue': [],
@@ -10,38 +10,48 @@ user_waiting_list = {
 
 finished_serve = False
 
+#
+wait_list = {}
+process_list = {}
+#
 
 def answerUserQuestion(uid, chatID, question):
-    return None
-    # def answerProcess():
-    #     profile = {
-    #         'isServed': False,
-    #         'data': {
-    #             'uid': uid,
-    #             'chatID': chatID,
-    #             'question': question
-    #         },
-    #         'status': False,
-    #         'timeout': time.time()
-    #     }
-    #     if uid not in user_waiting_list['users'].keys():
-    #         user_waiting_list['users'][uid] = {}
+    profile = {
+        'isServed': False,
+        'data': {
+            'uid': uid,
+            'chatID': chatID,
+            'question': question
+        },
+        'status': False,
+        'timeout': time.time()
+    }
+    if uid not in user_waiting_list['users'].keys():
+        user_waiting_list['users'][uid] = {}
 
-    #     idQuestion = str(time.time())
-    #     user_waiting_list["user_queue"].append(f"{uid}-{idQuestion}")
-    #     user_waiting_list['users'][uid][idQuestion] = profile
+    idQuestion = str(time.time())
+    user_waiting_list["user_queue"].append(f"{uid}-{idQuestion}")
+    user_waiting_list['users'][uid][idQuestion] = profile
 
-    #     while not user_waiting_list['users'][uid][idQuestion]["status"]:
-    #         time.sleep(1)
+    #
+    wait_list[f"{uid}-{idQuestion}"] = {
+        'uid': uid,
+        'chatID': chatID,
+        'question': question
+    }
+    #
 
-    #     profile = user_waiting_list['users'][uid][idQuestion].copy()
-    #     num_questions = len(user_waiting_list['users'][uid].keys())
-    #     if num_questions == 1: user_waiting_list['users'].pop(uid)
-    #     else: user_waiting_list['users'][uid].pop(idQuestion)
+    while not user_waiting_list['users'][uid][idQuestion]["status"]:
+        time.sleep(1)
 
-    #     if profile['code'] == 200:
-    #         return profile['answer']
-    #     else: return None
+    profile = user_waiting_list['users'][uid][idQuestion].copy()
+    num_questions = len(user_waiting_list['users'][uid].keys())
+    if num_questions == 1: user_waiting_list['users'].pop(uid)
+    else: user_waiting_list['users'][uid].pop(idQuestion)
+
+    if profile['code'] == 200:
+        return profile['answer']
+    else: return None
 
 
 
@@ -80,7 +90,7 @@ def fill_slot(user_waiting_list, temp_queue, result, max_users):
     return result
 
 
-def add_user(user, result):
+def add_user(user_waiting_list, user, result):
     user_str = user.split('-')
     userID = user_str[0]
     questionID = user_str[1]
@@ -116,7 +126,7 @@ def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_lim
         if user_waiting_list["users"][userID][questionID]["isServed"]:
             continue
 
-        if time.time() - user_waiting_list["users"][userID][questionID]['time'] > timeout:
+        if time.time() - user_waiting_list["users"][userID][questionID]['timeout'] > timeout:
             timeout_list.append({
                 'userID': userID,
                 'questionID': questionID,
@@ -128,12 +138,11 @@ def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_lim
         for process_user in result:
             list_user_str += process_user['userID']
             list_user_str += ' '
-        print(list_user_str)
 
         if userID in list_user_str:
             temp_queue.append(user)
             if len(temp_queue) > slot_limit:
-                result = add_user(temp_queue.pop(0), result)
+                result = add_user(user_waiting_list, temp_queue.pop(0), result)
             continue
         else:
             for waited_user in temp_queue:
@@ -144,8 +153,8 @@ def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_lim
                 if user_waiting_list["users"][waited_userID][waited_questionID]["isServed"]:
                     continue
 
-                time_delta = user_waiting_list["users"][userID][questionID]["time"] - \
-                    user_waiting_list["users"][waited_userID][waited_questionID]["time"]
+                time_delta = user_waiting_list["users"][userID][questionID]["timeout"] - \
+                    user_waiting_list["users"][waited_userID][waited_questionID]["timeout"]
 
                 if time_delta > time_limit and len(result) < max_users:
                     result.append({
@@ -212,6 +221,18 @@ def processAPIKey():
 Xử lí một user trong process_queue
 '''
 
+#
+def move_user(uid, questionid):
+    global wait_list, process_list
+
+    process_list[f"{uid}-{questionid}"] = wait_list[f"{uid}-{questionid}"].copy()
+    wait_list.pop(f"{uid}-{questionid}", None)
+
+
+def del_user(uid, questionid):
+    global process_list
+    process_list.pop(f"{uid}-{questionid}", None)
+#
 
 def processCohere(profile, key):
     global user_waiting_list, api_keys
@@ -223,12 +244,16 @@ def processCohere(profile, key):
         user_waiting_list['users'][uid][questionid]["isServed"] = True
         user_waiting_list["user_queue"].remove(f"{uid}-{questionid}")
 
+        #
+        move_user(uid, questionid)
+        #
+
         json_dict = profile['data']
         chat_id = json_dict['chatID']
-        chat_ref = ref.child(uid).child('chat').child(chat_id)
+        chat_ref = db.reference(f"/{uid}/chats/{chat_id}")
 
         question = json_dict['question']
-        conv_dict = chat_ref.child('summarized conversation').get()
+        conv_dict = chat_ref.child('summarized').get()
 
         cohere_bot = CoHere(key)
         summarized, conv_list, answer = cohere_bot.asked(question, conv_dict)
@@ -237,14 +262,14 @@ def processCohere(profile, key):
         chat_ref.child('conversation').push(delete_indicator(conv_list[-1]))
 
         if summarized:
-            chat_ref.child('summarized conversation').delete()
+            chat_ref.child('summarized').delete()
 
             for i in range(len(conv_list)):
-                chat_ref.child('summarized conversation').push(conv_list[i])
+                chat_ref.child('summarized').push(conv_list[i])
 
         else:
-            chat_ref.child('summarized conversation').push(conv_list[-2])
-            chat_ref.child('summarized conversation').push(conv_list[-1])
+            chat_ref.child('summarized').push(conv_list[-2])
+            chat_ref.child('summarized').push(conv_list[-1])
 
         for api in api_keys:
             if api["key"] == key:
@@ -257,8 +282,14 @@ def processCohere(profile, key):
 
     except Exception as error:
         print(error)
-        time.sleep(10)
+        user_waiting_list['users'][uid][questionid]['code'] = 504
+        user_waiting_list['users'][uid][questionid]['status'] = True
 
+
+    #
+    del_user(uid, questionid)
+    #
+    
     print("Terminate process uid")
 
 
