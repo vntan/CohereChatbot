@@ -69,13 +69,17 @@ def delete_indicator(text):
     return text.replace("You: ", "").replace("Cohere: ", "")
 
 
-def fill_slot(user_waiting_list, temp_queue, result, max_users):
+def fill_slot(user_waiting_list, temp_queue, max_users, result, list_user_str):
     for user in temp_queue:
         user_str = user.split('-')
         userID = user_str[0]
         questionID = user_str[1]
+        chatID = user_waiting_list["users"][userID][questionID]["data"]["chatID"]
 
         if user_waiting_list["users"][userID][questionID]["isServed"]:
+            continue
+
+        if f"{userID}-{chatID}" in list_user_str:
             continue
 
         result.append({
@@ -90,21 +94,26 @@ def fill_slot(user_waiting_list, temp_queue, result, max_users):
     return result
 
 
-def add_user(user_waiting_list, user, result):
+def add_user(user_waiting_list, user, result, list_user_str):
     user_str = user.split('-')
     userID = user_str[0]
     questionID = user_str[1]
+    chatID = user_waiting_list["users"][userID][questionID]["data"]["chatID"]
 
     if user_waiting_list["users"][userID][questionID]["isServed"]:
-        return result
+        return result, list_user_str
+    
+    if f"{userID}-{chatID}" in list_user_str:
+        return result, list_user_str
 
     result.append({
         'userID': userID,
         'questionID': questionID,
         'data': user_waiting_list["users"][userID][questionID]["data"],
     })
+    list_user_str += f"{userID}-{chatID} "
 
-    return result
+    return result, list_user_str
 
 
 def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_limit=5, timeout=300):
@@ -113,15 +122,20 @@ def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_lim
 
     result = []
     temp_queue = []
-    num_del = 0
+
+    list_user_str = ''
 
     for user in user_waiting_list["user_queue"]:
         if len(result) == max_users:
             break
-
-        user_str = user.split('-')
-        userID = user_str[0]
-        questionID = user_str[1]
+        
+        try:
+            user_str = user.split('-')
+            userID = user_str[0]
+            questionID = user_str[1]
+            chatID = user_waiting_list["users"][userID][questionID]["data"]["chatID"]
+        except:
+            continue
 
         if user_waiting_list["users"][userID][questionID]["isServed"]:
             continue
@@ -134,23 +148,24 @@ def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_lim
             })
             continue
 
-        list_user_str = ''
-        for process_user in result:
-            list_user_str += process_user['userID']
-            list_user_str += ' '
 
         if userID in list_user_str:
             temp_queue.append(user)
             if len(temp_queue) > slot_limit:
-                result = add_user(user_waiting_list, temp_queue.pop(0), result)
+                result, list_user_str = add_user(user_waiting_list, temp_queue.pop(0), result, list_user_str)
             continue
         else:
             for waited_user in temp_queue:
                 waited_user_str = waited_user.split('-')
                 waited_userID = waited_user_str[0]
                 waited_questionID = waited_user_str[1]
+                waited_chatID = user_waiting_list["users"][waited_userID][waited_questionID]["data"]["chatID"]
 
                 if user_waiting_list["users"][waited_userID][waited_questionID]["isServed"]:
+                    continue
+
+                if f"{waited_userID}-{waited_chatID}" in list_user_str:
+                    temp_queue.remove(waited_user)
                     continue
 
                 time_delta = user_waiting_list["users"][userID][questionID]["timeout"] - \
@@ -162,7 +177,8 @@ def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_lim
                         'questionID': waited_questionID,
                         'data': user_waiting_list["users"][waited_userID][waited_questionID]["data"],
                     })
-                    num_del += 1
+                    list_user_str += f"{waited_userID}-{waited_chatID} "
+                    temp_queue.remove(waited_user)
                 else:
                     break
 
@@ -174,11 +190,10 @@ def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_lim
             'questionID': questionID,
             'data': user_waiting_list["users"][userID][questionID]["data"],
         })
+        list_user_str += f"{userID}-{chatID} "
 
     if len(result) < max_users:
-        for _ in range(num_del):
-            temp_queue.pop(0)
-        result = fill_slot(user_waiting_list, temp_queue, result, max_users)
+        result = fill_slot(user_waiting_list, temp_queue, max_users, result, list_user_str)
 
     return result, timeout_list
 
@@ -258,6 +273,10 @@ def processCohere(profile, key):
         cohere_bot = CoHere(key)
         summarized, conv_list, answer = cohere_bot.asked(question, conv_dict)
 
+        #
+        print("Done answering", time.ctime(time.time()))
+        #
+        
         chat_ref.child('conversation').push(delete_indicator(conv_list[-2]))
         chat_ref.child('conversation').push(delete_indicator(conv_list[-1]))
 
