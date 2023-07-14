@@ -1,4 +1,5 @@
 import cohere
+import time
 
 class CoHere:
     def __init__(self, api_key):
@@ -23,11 +24,8 @@ class CoHere:
     def count_token(self, text):
         return len(self.co.tokenize(text=text))
 
-    def asked(self, question, conv_dict, max_tokens=500, temp=0):
-        question_message = self.add_human_text(question)
-        
+    def asked(self, conv_dict, max_tokens=500, temp=0):
         conv_list = list(conv_dict.values())
-        conv_list = conv_list + [question_message]
 
         prompt = ('\n'.join(conv_list) + '\nCohere:')
 
@@ -64,10 +62,12 @@ class CoHere:
               max_tokens=max_tokens,
               temperature=temp).generations[0].text
         answer = self.cut_answer(answer)
+        answer_time = time.ctime(time.time())
+
         
         conv_list.append(self.add_bot_text(self.clean_text(answer)))
 
-        return summarized, conv_list, self.clean_text(answer)
+        return summarized, conv_list, self.clean_text(answer), answer_time
     
     def summarize(self, conserv, temp=0, command=''):
         return self.co.summarize(text=conserv,

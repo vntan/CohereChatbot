@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from utilities.Firebase.firebase_config import auth, db
-from user_serve import answerUserQuestion
+from user_serve import answerUserQuestion, add_human_text, add_bot_text
 import uuid
 
 #
@@ -161,18 +161,30 @@ def ask_question():
 
         if not chat_ref.child('chatName').get():
             raise Exception('Cannot find chat')
+        
+        question_time = time.ctime(time.time())
 
         question = json_dict['question']
-        answer = answerUserQuestion(uid, chat_id, question)
+
+        chat_ref.child('conversation').push(question)
+        chat_ref.child('summarized').push(add_human_text(question))
+
+        answer, answer_time = answerUserQuestion(uid, chat_id, question)
         
         if answer != None:
             return jsonify({
-                'answer': answer
+                'answer': answer,
+                'questionTime': question_time,
+                'answerTime': answer_time
             })
-        else: raise Exception('Cannot answer the question')
+        else: 
+            chat_ref.child('conversation').push('Cannot answer the question now')
+            chat_ref.child('summarized').push(add_bot_text('Cannot answer the question now'))
+            raise Exception('Cannot answer the question')
 
     except Exception as error:
-        return str(error), 504
+
+        return 'Cannot answer the question', 504
 
 @apis.get('/status')
 def get_status():
