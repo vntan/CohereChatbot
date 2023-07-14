@@ -50,7 +50,7 @@ def answerUserQuestion(uid, chatID, question):
     else: user_waiting_list['users'][uid].pop(idQuestion)
 
     if profile['code'] == 200:
-        return profile['answer']
+        return profile['answer'], profile['answerTime']
     else: return None
 
 
@@ -68,6 +68,11 @@ api_keys = [
 def delete_indicator(text):
     return text.replace("You: ", "").replace("Cohere: ", "")
 
+def add_human_text(text):
+    return 'You: ' + text
+
+def add_bot_text(text):
+    return 'Cohere: ' + text
 
 def fill_slot(user_waiting_list, temp_queue, max_users, result, list_user_str):
     for user in temp_queue:
@@ -267,17 +272,15 @@ def processCohere(profile, key):
         chat_id = json_dict['chatID']
         chat_ref = db.reference(f"/{uid}/chats/{chat_id}")
 
-        question = json_dict['question']
         conv_dict = chat_ref.child('summarized').get()
 
         cohere_bot = CoHere(key)
-        summarized, conv_list, answer = cohere_bot.asked(question, conv_dict)
+        summarized, conv_list, answer, answer_time = cohere_bot.asked(conv_dict)
 
         #
         print("Done answering", time.ctime(time.time()))
         #
         
-        chat_ref.child('conversation').push(delete_indicator(conv_list[-2]))
         chat_ref.child('conversation').push(delete_indicator(conv_list[-1]))
 
         if summarized:
@@ -287,7 +290,6 @@ def processCohere(profile, key):
                 chat_ref.child('summarized').push(conv_list[i])
 
         else:
-            chat_ref.child('summarized').push(conv_list[-2])
             chat_ref.child('summarized').push(conv_list[-1])
 
         for api in api_keys:
@@ -295,7 +297,9 @@ def processCohere(profile, key):
                 api["count"] -= 1
                 api["estimateGeneration"] -= 1
 
+
         user_waiting_list['users'][uid][questionid]['answer'] = answer
+        user_waiting_list['users'][uid][questionid]['answerTime'] = answer_time
         user_waiting_list['users'][uid][questionid]['code'] = 200
         user_waiting_list['users'][uid][questionid]['status'] = True
 
