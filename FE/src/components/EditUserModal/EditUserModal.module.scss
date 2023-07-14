@@ -2,67 +2,87 @@ $primary: #11998e;
 $secondary: #38ef7d;
 $white: #fff;
 $gray: #9b9b9b;
+$black: #000;
 
-.edit_avatar{
-    position: relative;
-    cursor: pointer;
+.edit_avatar {
+  position: relative;
+  cursor: pointer;
 
-    .avatar_info {
-        width: 10vb;
-        height: 10vb;
-        border-radius: 50%;
-    }
-
-
-    div{
-        display: none !important;
-        position: absolute;
-        top: 0;
-        width: 10vb;
-        height: 10vb;
-        border-radius: 50%;
-        background-color: rgba(0, 0, 0, 0.4);
-
-        i{
-            color: white;
-        }
-    }
-
-    .avatar_info:hover + div{
-        display: flex !important;
-    }
-    
-}
-
-
-  
-
-.modalBox {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    
+  .avatar_info {
+    width: 10vb;
+    height: 10vb;
+    border-radius: 50%;
   }
 
-.table_userInfo{
+  div {
+    display: none !important;
+    position: absolute;
+    top: 0;
+    width: 10vb;
+    height: 10vb;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.4);
 
-    &>tr>*{
-        font-family: Arial, Helvetica, sans-serif;
+    i {
+      color: white;
     }
+  }
 
-    &>tr>.form_label{
-        position: absolute;
-        top: 0;
-        display: block;
-        transition: 0.2s;
-        font-size: 1rem;
-        color: $gray;
-    }
-    &>tr>td:last-child{
-        padding-left: 12px;
-    }
+  .avatar_info:hover + div {
+    display: flex !important;
+  }
 }
 
-.error{
-    color: red;
+.modalBox {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+.table_userInfo {
+  & > tr > * {
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  & > tr > .form_label {
+    position: fixed; 
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: $gray;
+  }
+  & > tr > div{
+    padding-left: 12px;
+  }
+  .input_field{
+    display:block;
+    height:30px;
+    width:90%;
+    margin:0 auto;
+    border:none;
+    &::placeholder{
+      -webkit-transform:translateY(0px);
+        transform:translateY(0px);
+      -webkit-transition:.5s;
+        transition:.5s;
+    }
+    &:hover,
+    &:focus,
+    &:active:focus{
+      color: $black;
+      outline:none;
+      border-bottom:1px solid $black;
+      &::placeholder{
+        color: $black;
+        position:relative;
+        -webkit-transform:translateY(-20px);
+        transform:translateY(-20px);
+      }
+    }
+  }
+}
+
+.error {
+  color: red;
 }

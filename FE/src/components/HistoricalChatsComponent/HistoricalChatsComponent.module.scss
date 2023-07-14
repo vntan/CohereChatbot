@@ -1,77 +1,105 @@
 div {
-    & > .chat_new {
-        padding: 8px 10px;
-        padding-top: 12px;
-        font-weight: bold;
-        cursor: pointer;
+  & > .chat_new {
+    padding: 8px 10px;
+    padding-top: 12px;
+    font-weight: bold;
+    cursor: pointer;
 
-        & > i {
-            font-size: 16px;
-            padding-right: 5px;
-        }
+    & > i {
+      font-size: 16px;
+      padding-right: 5px;
     }
+  }
 
-    & > .history_panel_title {
-        font-size: smaller;
-        padding: 0px 10px;
-        padding-bottom: 10px;
+  & > .history_panel_title {
+    font-size: smaller;
+    padding: 0px 10px;
+    padding-bottom: 10px;
+  }
+
+  & > .history_panel {
+    height: calc(100% - 75px);
+
+    overflow: scroll;
+    overflow-x: hidden;
+    padding: 0px 10px;
+
+    & > div {
+      margin-bottom: 10px;
     }
-
-    & > .history_panel {
-        height: calc(100% - 75px);
-
-        overflow: scroll;
-        overflow-x: hidden;
-        padding: 0px 10px;
-
-        & > div {
-            margin-bottom: 10px;
-        }
-    }
+  }
 }
 
 .chat_item {
-    border-radius: 10px;
-    border: #000000 1px solid;
-    padding: 8px 10px;
-    cursor: pointer;
+  border-radius: 10px;
+  border: #000000 1px solid;
+  padding: 8px 10px;
+  cursor: pointer;
 
-    & > img {
-        width: 25px;
-    }
+  & > img {
+    width: 25px;
+  }
 
-    & > span {
-        overflow-x: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
+  & > span {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
-    & > input{
-      width: 20%;
-    }
+  & > input {
+    width: 20%;
+  }
 
-    & > div > i {
-        overflow-x: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
+  & > div > i {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
-    &:hover > .func, & > .edit {
-        overflow-x: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        display: flex !important;
-        margin-left: 5px;
+  &:hover > .func,
+  & > .edit {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex !important;
+    margin-left: 5px;
+  }
+  .inputEditNameChat {
+    display: block;
+    height: 100%;
+    width: 70%;
+    margin: 0 auto;
+    border: none;
+    border-bottom: 1px solid #000;
+    &::placeholder {
+      -webkit-transform: translateY(0px);
+      transform: translateY(0px);
+      -webkit-transition: 0.5s;
+      transition: 0.5s;
     }
+    
+    &:hover,
+    &:focus,
+    &:active:focus {
+      color: #000;
+      outline: none;
+      &::placeholder {
+        color: #000;
+        position: relative;
+        -webkit-transform: translateY(-20px);
+        transform: translateY(-20px);
+      }
+    }
+  }
 }
 
-.text-decoration-line-through{
+.text-decoration-line-through {
   text-decoration: line-through;
 }
 
-.loading-cursor{
+.loading-cursor {
   cursor: wait !important;
-  &>*{
+  & > * {
     cursor: wait !important;
   }
 }

@@ -166,7 +166,7 @@ export default function HistoricalChats({ addChatName = { chatID: "", chatName: 
                                         </>
                                     ) : (
                                         <>
-                                            <input type="text" class={`flex-grow-1`} onChange={(e) => setInputChatName(e.target.value)} value={inputChatName} disabled={isProcessEdit} />
+                                            <input type="text" class={`${styles["inputEditNameChat"]} flex-grow-1`} onChange={(e) => setInputChatName(e.target.value)} value={inputChatName} disabled={isProcessEdit} />
 
                                             <div class={` ${isProcessDelete || isProcessEdit ? "d-none" : styles["edit"]}`}>
                                                 <i

@@ -87,10 +87,10 @@ export default function LoginPage() {
                 {error}
               </div>
             )}
-
+          <div>
             <form className={`${styles["wrapperForm-form"]} alert-danger`}>
               <div>
-                <label for="txtEmail">Email</label>
+                <label>Email</label>
                 <input
                   type="text"
                   className={`form-control ${styles["form-control"]} no-border`}
@@ -105,7 +105,7 @@ export default function LoginPage() {
                 <div></div>
               </div>
               <div>
-                <label for="txtPassword">Password</label>
+              <label>Password</label>
                 <input
                   type="password"
                   className={`form-control ${styles["form-control"]} no-border`}
@@ -131,6 +131,7 @@ export default function LoginPage() {
                 </button>
               </div>
             </form>
+            </div>
 
             <div className={`${styles["line"]}`}>OR</div>
 

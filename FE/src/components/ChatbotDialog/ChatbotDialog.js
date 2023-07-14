@@ -181,7 +181,7 @@ export default function ChatbotDialog({ setOnAddChatName, setOnUpdateChatName, n
                             <>
                                 <input
                                     type="text"
-                                    class={`flex-grow-1`}
+                                    class={`${styles["inputTitleName"]} flex-grow-1`}
                                     onChange={(e) => setTitleInput(e.target.value)}
                                     value={titleInput}
                                     onKeyDown={handleKeyDownTitle}

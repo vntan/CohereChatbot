@@ -1,4 +1,8 @@
-$background-color-primary: linear-gradient(109.6deg, rgba(156,252,248,1) 11.2%, rgba(110,123,251,1) 91.1%);
+$background-color-primary: linear-gradient(
+  109.6deg,
+  rgba(2, 87, 255, 0.989) 11.2%,
+  rgb(139, 151, 255) 91.1%
+);
 $background-color-secondary: #000;
 
 .bg-size {
@@ -61,7 +65,7 @@ $background-color-secondary: #000;
     &-registerForm {
         border-top-right-radius: 30px;
         border-bottom-right-radius: 30px;
-        background: linear-gradient(to right, #9900ff, #cc80ff);
+        background: rgba(2, 87, 255, 0.989) 50%;
     }
 }
 
