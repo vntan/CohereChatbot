@@ -31,7 +31,7 @@ export default function HistoricalChats({ addChatName = { chatID: "", chatName: 
     useEffect(() => {
         if (addChatName.chatID && addChatName.chatID != "") {
             if (addChatName.chatName && addChatName.chatName != "") {
-                chatList.push({
+                chatList.unshift({
                     ...addChatName
                 });
                 setChatList([...chatList]);
