@@ -18,8 +18,8 @@ Error Code:
 404: Cannot find user id  
 
 
-### 2. /getOneChat
-URL: /getOneChat  
+### 2. /loadChat
+URL: /loadChat  
 Method: POST  
 Description: Get one chat messages base on chat name  
 Data Request: {  
@@ -48,6 +48,7 @@ Return Value: {
 }  
 Error Code:   
 404: Cannot find user id  
+504: Cannot create chat
 
 ### 4. /question
 URL: /question  
@@ -59,7 +60,9 @@ Data Request: {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"question": Question  
 }  
 Return Value: {  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"answer": Cohere response  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"answer": Cohere response 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"questionTime": Server get question time,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"answerTime": Cohere answered question time 
 }  
 Error Code:  
 400: Cannot find chat with requested chat ID  
@@ -82,6 +85,7 @@ Return Value: {
 Error Code:  
 400: Cannot find chat with requested chat ID  
 404: Cannot find user id   
+504: Cannot rename the chat
 
 
 ### 6. /deleteChat
@@ -97,3 +101,4 @@ Return Value: {
 }  
 Error Code:  
 404: Cannot find user id  
+504: Cannot delete the chat
