@@ -3,8 +3,9 @@ import { getCurrentUser } from "../../utilities/firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./HistoricalChatsComponent.module.scss";
 import axios from "axios";
+import { formatDate } from "../../utilities/format";
 
-export default function HistoricalChats({ addChatName = { chatID: "", chatName: "" }, updateChatName = { chatID: "", rename: "" }, onChatClick = () => {}, onCreateChat = () => {}, onDeleteChat = () => {}, onEditChat = () => {} }) {
+export default function HistoricalChats({ addChatName = { chatID: "", chatName: "", createTime: "" }, updateChatName = { chatID: "", rename: "" }, onChatClick = () => {}, onCreateChat = () => {}, onDeleteChat = () => {}, onEditChat = () => {} }) {
     const [chatList, setChatList] = useState([]);
     const [inputChatName, setInputChatName] = useState("");
     const [isProcessAdd, setProcessAdd] = useState(false);
@@ -143,7 +144,8 @@ export default function HistoricalChats({ addChatName = { chatID: "", chatName: 
                                         if (isIDChatDelete || isIDChatEdit) return;
                                         onChatClick(nameChatObj);
                                     }}
-                                    class={`${styles["chat_item"]} ${isLoading ? styles["loading-cursor"] : ""} chat_item_edit d-flex align-items-center`}>
+                                    class={`${styles["chat_item"]} ${isLoading ? styles["loading-cursor"] : ""} chat_item_edit d-flex align-items-center`}
+                                    title={formatDate(nameChatObj["createTime"])}>
                                     <img src="img/chat_icon.png" class="me-2" alt="chat_icon"></img>
                                     {!isEdit ? (
                                         <>

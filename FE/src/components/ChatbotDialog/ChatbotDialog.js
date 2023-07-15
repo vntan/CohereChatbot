@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import styles from "./ChatbotDialog.module.scss";
 import { getCurrentUser } from "../../utilities/firebase";
+import { formatDate } from "../../utilities/format";
 
 export default function ChatbotDialog({ setOnAddChatName, setOnUpdateChatName, nameChat }) {
     const bottomRef = useRef(null);
@@ -34,7 +35,7 @@ export default function ChatbotDialog({ setOnAddChatName, setOnUpdateChatName, n
     }, [nameChat]);
 
     useEffect(() => {
-        localStorage.setItem('Curr', JSON.stringify(nameChatObj))
+        localStorage.setItem('CurrentChat', JSON.stringify(nameChatObj))
         if (!nameChatObj || !nameChatObj.chatID) {
             setChatDialog([]);
             setQuestionInput("");
@@ -122,6 +123,7 @@ export default function ChatbotDialog({ setOnAddChatName, setOnUpdateChatName, n
                 const nameChat = {
                     chatID: data["chatID"],
                     chatName: titleInput,
+                    createTime: data["createTime"],
                 };
 
                 setNameChatObj({ ...nameChat });
@@ -139,7 +141,10 @@ export default function ChatbotDialog({ setOnAddChatName, setOnUpdateChatName, n
 
         const question = questionInput;
         setQuestionInput("");
-        chatDialog.push(question);
+        chatDialog.push({
+            message: question,
+            time: (new Date()).toString()
+        });
         setChatDialog([...chatDialog]);
         setIsWaitingAnswer(true);
 
@@ -154,10 +159,14 @@ export default function ChatbotDialog({ setOnAddChatName, setOnUpdateChatName, n
                 console.log(res);
                 const data = res.data;
                 
-                const item = JSON.parse(localStorage.getItem("Curr"));
+                const item = JSON.parse(localStorage.getItem("CurrentChat"));
                 
                 if (item.chatID === current_chat.chatID) {
-                    chatDialog.push(data["answer"]);
+                    chatDialog[chatDialog.length - 1].time = data["questionTime"]
+                    chatDialog.push({
+                        message: data["answer"],
+                        time: data["answerTime"]
+                    });
                     setChatDialog([...chatDialog]);
                 }
 
@@ -211,15 +220,15 @@ export default function ChatbotDialog({ setOnAddChatName, setOnUpdateChatName, n
                             chatDialog.map((item, pos) => {
                                 return pos % 2 == 0 ? (
                                     <>
-                                        <div ref={bottomRef}>
+                                        <div ref={bottomRef} title={formatDate(item["time"])}>
                                             <img src="./img/chatbot.png" alt="bot_chat" />
-                                            <span>{item}</span>
+                                            <span>{item["message"]}</span>
                                         </div>
                                     </>
                                 ) : (
-                                    <div ref={bottomRef}>
+                                    <div ref={bottomRef} title={formatDate(item["time"])}>
                                         <img src={getCurrentUser().photoURL ? getCurrentUser().photoURL : "./img/user.png"} alt="bot_chat" />
-                                        <span>{item}</span>
+                                        <span>{item["message"]}</span>
                                     </div>
                                 );
                             })
