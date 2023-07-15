@@ -8,11 +8,18 @@ Here is BE folder
 URL: /getHistoricalChat  
 Method: POST  
 Description: Get all of user's historical chat names  
-Data Request: {  
+Data Request: 
+{  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID  
 }  
-Return Value: {  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"listHistoricalChats": array contains user's historical chat names and ids  
+Return Value: 
+{  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"listHistoricalChats": Array contains user's historical chat names, ids and create time, each element in array will follow this format:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatID": Chat ID,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatName": Chat name,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"createTime": Create chat time
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
 }  
 Error Code:  
 404: Cannot find user id  
@@ -22,12 +29,18 @@ Error Code:
 URL: /loadChat  
 Method: POST  
 Description: Get one chat messages base on chat name  
-Data Request: {  
+Data Request: 
+{  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatID": Chat ID  
 }  
-Return Value: {  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"userChat": array contains user's chat  
+Return Value: 
+{  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"userChat": Array contains user's chat, each element in array will follow this format:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"message": User/Bot message,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"time": User question/Bot answer time
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
 }  
 Error Code:  
 400: Cannot find chat with requested chat ID  
@@ -38,13 +51,16 @@ Error Code:
 URL: /createChat  
 Method: POST  
 Description: Create a chat base on chat name  
-Data Request: {  
+Data Request: 
+{  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatName": Chat name  
 }  
-Return Value: {  
+Return Value: 
+{  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatID": Chat ID,  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"newChat": First message of a chat  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatName": Chat name,  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"createTime": Create chat time 
 }  
 Error Code:   
 404: Cannot find user id  
@@ -54,12 +70,14 @@ Error Code:
 URL: /question  
 Method: POST  
 Description: Questioning Cohere  
-Data Request: {  
+Data Request: 
+{  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatID": Chat ID,  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"question": Question  
 }  
-Return Value: {  
+Return Value: 
+{  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"answer": Cohere response 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"questionTime": Server get question time,
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"answerTime": Cohere answered question time 
@@ -74,12 +92,14 @@ Error Code:
 URL: /renameChat  
 Method: POST  
 Description: Deleta a chat base on chat name  
-Data Request: {  
+Data Request: 
+{  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatID": Chat ID,  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"newChatName": New chat name  
 }  
-Return Value: {  
+Return Value: 
+{  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"code": 200 (successfully renamed)  
 }  
 Error Code:  
@@ -92,11 +112,13 @@ Error Code:
 URL: /deleteChat  
 Method: POST  
 Description: Delete a chat base on chat name  
-Data Request: {  
+Data Request: 
+{  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatName": Chat name  
 }  
-Return Value: {  
+Return Value: 
+{  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"code": 200 (successfully deleted)  
 }  
 Error Code:  

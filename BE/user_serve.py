@@ -281,7 +281,10 @@ def processCohere(profile, key):
         print("Done answering", time.ctime(time.time()))
         #
         
-        chat_ref.child('conversation').push(delete_indicator(conv_list[-1]))
+        chat_ref.child('conversation').push({
+            'message': delete_indicator(conv_list[-1]),
+            'time': answer_time
+        })
 
         if summarized:
             chat_ref.child('summarized').delete()

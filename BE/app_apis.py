@@ -28,7 +28,8 @@ def getHistoricalChat():
         for key, value in all_user_chat.items():
             history_chats.insert(0, {
                 "chatID": key,
-                "chatName": value["chatName"]
+                "chatName": value["chatName"],
+                "createTime": value["createTime"]
             })
 
     return jsonify({
@@ -71,7 +72,7 @@ def create_chat():
         return 'Cannot find user id', 404
 
     try:
-        chatName = json_dict['chatName']
+        chat_name = json_dict['chatName']
         
         uid1 = uuid.uuid1()
 
@@ -79,14 +80,23 @@ def create_chat():
 
         chat_ref = db.reference(f"/{uid}/chats/{id}")
 
-        chat_ref.child('chatName').set(chatName)
-        
-        chat_ref.child('conversation').push('Hello! What can I help you?')
+        create_time = time.ctime(time.time())
+
+        chat_ref.child('chatName').set(chat_name)
+
+        chat_ref.child('createTime').set(create_time)
+
+        chat_ref.child('conversation').push({
+            'message': 'Hello! What can I help you?',
+            'time': create_time
+        })
+
         chat_ref.child('summarized').push('Cohere: Hello! What can I help you?')
 
         return jsonify({
             'chatID': id,
-            'chatName': chatName
+            'chatName': chat_name,
+            'createTime': create_time
         })
     except Exception as error:
         print(error)
@@ -166,7 +176,10 @@ def ask_question():
 
         question = json_dict['question']
 
-        chat_ref.child('conversation').push(question)
+        chat_ref.child('conversation').push({
+            'message': question,
+            'time': question_time
+        })
         chat_ref.child('summarized').push(add_human_text(question))
 
         answer, answer_time = answerUserQuestion(uid, chat_id, question)
@@ -178,7 +191,10 @@ def ask_question():
                 'answerTime': answer_time
             })
         else: 
-            chat_ref.child('conversation').push('Cannot answer the question now')
+            chat_ref.child('conversation').push({
+                'message': 'Cannot answer the question now',
+                'time': answer_time
+            })
             chat_ref.child('summarized').push(add_bot_text('Cannot answer the question now'))
             raise Exception('Cannot answer the question')
 
