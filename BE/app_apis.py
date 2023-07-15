@@ -90,7 +90,7 @@ def create_chat():
         })
     except Exception as error:
         print(error)
-        return 'Cannot add chats', 404
+        return 'Cannot add chats', 504
 
 
 @apis.post('/renameChat')
@@ -108,7 +108,7 @@ def rename_chat():
         new_chat_name = json_dict['newChatName']
 
         if not db.reference(f"/{uid}/chats/{chat_id}/chatName").get():
-            raise Exception('Cannot find chat')
+            return 'No chat found', 400
 
         db.reference(f"/{uid}/chats/{chat_id}").update({
             'chatName': new_chat_name
@@ -119,7 +119,7 @@ def rename_chat():
         })
     except Exception as error:
         print(error)
-        return 'Cannot rename the chat', 404
+        return 'Cannot rename the chat', 504
 
 
 @apis.post('/deleteChat')
@@ -142,7 +142,7 @@ def detele_chat():
         })
     except Exception as error:
         print(error)
-        return 'Cannot delete the chat', 404
+        return 'Cannot delete the chat', 504
 
 
 @apis.post('/question')
@@ -160,7 +160,7 @@ def ask_question():
         chat_ref = db.reference(f"/{uid}/chats/{chat_id}")
 
         if not chat_ref.child('chatName').get():
-            raise Exception('Cannot find chat')
+            return 'No chat found', 400
         
         question_time = time.ctime(time.time())
 
@@ -183,7 +183,6 @@ def ask_question():
             raise Exception('Cannot answer the question')
 
     except Exception as error:
-
         return 'Cannot answer the question', 504
 
 @apis.get('/status')
