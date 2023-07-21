@@ -1,0 +1,135 @@
+$main_content_bg_color: linear-gradient(
+  109.6deg,
+  rgb(156, 188, 252) 11.2%,
+  rgba(110, 123, 251, 1) 91.1%
+);
+
+.main-content {
+  background: $main_content_bg_color;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  overflow-y: scroll !important;
+}
+
+.control-panel {
+  background-color: #fff;
+  flex-grow: 1;
+  height: 45vh;
+
+  // &--rounded {
+    
+  // }
+
+  & > .user_info {
+    height: 50px;
+    padding: 10px 10px;
+
+    & > .avatar {
+      vertical-align: middle;
+      width: 5vb;
+      height: 5vb;
+      border-radius: 50%;
+      align-items: center;
+    }
+
+    & > span {
+      padding-left: 10px;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    & > i {
+      position: relative;
+      cursor: pointer;
+
+      & > .config_popup {
+        position: absolute;
+        transform: translate(36px, -16px);
+        width: 200px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0px 2px 22px 2px rgba(0, 0, 0, 0.75);
+
+        & > div {
+          padding: 15px;
+          cursor: pointer;
+        }
+
+        & > div:hover {
+          padding: 15px;
+          background-color: rgba(0, 0, 0, 0.212);
+        }
+
+        & > div:first-child:hover {
+          border-top-right-radius: 12px;
+          border-top-left-radius: 12px;
+        }
+
+        & > div:last-child:hover {
+          border-bottom-right-radius: 12px;
+          border-bottom-left-radius: 12px;
+        }
+      }
+    }
+  }
+
+  & > .container-historical-chats {
+    height: 100px;
+
+    & > .line {
+      width: 100%;
+      border: #000000 1px solid;
+    }
+  }
+
+  & > .about_us {
+    @extend .user_info;
+    cursor: pointer;
+    background-color: #fff;
+  }
+}
+
+.chatbot {
+  height: 100vh;
+
+  .title {
+    & > h1 {
+      font-size: 3em;
+      color: #fff;
+    }
+
+    & > img {
+      width: 20px;
+      margin-left: 20px;
+    }
+  }
+}
+
+.about_us 
+{
+  background-color: #fff;
+  height: 8vh;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
