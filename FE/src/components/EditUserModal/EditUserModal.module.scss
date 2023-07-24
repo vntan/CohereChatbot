@@ -45,39 +45,41 @@ $black: #000;
   }
 
   & > tr > .form_label {
-    position: fixed; 
+    position: fixed;
     top: 0;
     display: block;
     transition: 0.2s;
     font-size: 1rem;
     color: $gray;
   }
-  & > tr > div{
+
+  & > tr > div {
     padding-left: 12px;
   }
-  .input_field{
-    display:block;
-    height:30px;
-    width:90%;
-    margin:0 auto;
-    border:none;
-    &::placeholder{
-      -webkit-transform:translateY(0px);
-        transform:translateY(0px);
-      -webkit-transition:.5s;
-        transition:.5s;
+
+  .input_field {
+    display: block;
+    height: 30px;
+    width: 90%;
+    margin: 0 auto;
+    border: none;
+    &::placeholder {
+      -webkit-transform: translateY(0px);
+      transform: translateY(0px);
+      -webkit-transition: 0.5s;
+      transition: 0.5s;
     }
     &:hover,
     &:focus,
-    &:active:focus{
+    &:active:focus {
       color: $black;
-      outline:none;
-      border-bottom:1px solid $black;
-      &::placeholder{
+      outline: none;
+      border-bottom: 1px solid $black;
+      &::placeholder {
         color: $black;
-        position:relative;
-        -webkit-transform:translateY(-20px);
-        transform:translateY(-20px);
+        position: relative;
+        -webkit-transform: translateY(-20px);
+        transform: translateY(-20px);
       }
     }
   }

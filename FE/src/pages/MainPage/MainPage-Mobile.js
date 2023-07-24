@@ -48,7 +48,6 @@ export default function MainPageMobile() {
     if (nameObj.chatID === nameChatObj.chatID) {
       setNameChatObj({
         ...nameObj,
-
       });
     }
   };
@@ -60,7 +59,7 @@ export default function MainPageMobile() {
           class={`${styles["control-panel"]} ${styles["control-panel--rounded"]} d-sm-flex flex-column d-flex justify-content-between`}
         >
           <div
-            class={`${styles["user_info"]} d-flex  justify-content-center align-items-center`}
+            class={`${styles["user_info"]} d-flex justify-content-center align-items-center`}
           >
             <img
               src={userInfo.photoURL ? userInfo.photoURL : "./img/user.png"}
@@ -125,10 +124,6 @@ export default function MainPageMobile() {
           ></ChatbotDialog>
         </div>
 
-        <AboutUsModal
-          show={isOpenAboutUs}
-          onClose={() => setIsOpenAboutUs(false)}
-        ></AboutUsModal>
         <UserInformationModal
           show={isOpenUserInformation}
           userInfo={userInfo}
@@ -136,21 +131,28 @@ export default function MainPageMobile() {
           onEditClick={handleUserInformationEditClick}
         ></UserInformationModal>
 
+        <AboutUsModal
+          show={isOpenAboutUs}
+          onClose={() => setIsOpenAboutUs(false)}
+        ></AboutUsModal>
+
         {/* Edit User Modal Here */}
-        {isOpenEditUserInformation && (
-          <EditUserModal
-            userInfo={getCurrentUser()}
-            onClose={() => setIsOpenEditUserInformation(false)}
-          ></EditUserModal>
-        )}
+          {isOpenEditUserInformation && (
+          <div class={`${styles["editUserModal"]}`}>
+            <EditUserModal
+              userInfo={getCurrentUser()}
+              onClose={() => setIsOpenEditUserInformation(false)}
+            ></EditUserModal>
+          </div>
+          )}
         <div class={`${styles["line"]}`}></div>
         <div
-            class={`${styles["about_us"]} d-flex align-items-center`}
-            onClick={() => setIsOpenAboutUs(true)}
-          >
-            <i class="fas fa-info-circle me-2"></i>
-            <span>About us</span>
-          </div>
+          class={`${styles["about_us"]} d-flex align-items-center`}
+          onClick={() => setIsOpenAboutUs(true)}
+        >
+          <i class="fas fa-info-circle me-2"></i>
+          <span>About us</span>
+        </div>
       </div>
     </div>
   );
