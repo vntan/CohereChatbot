@@ -18,6 +18,7 @@ export default function MainPageMobile() {
   const [updateChatName, setUpdateChatName] = useState({});
   const [addChatName, setAddChatName] = useState({});
   const [nameChatObj, setNameChatObj] = useState({});
+  const [IsOpenNavBar, setIsOpenNavBar] = useState(false);
 
   useEffect(() => {
     setUserInfo(getCurrentUser());
@@ -52,60 +53,77 @@ export default function MainPageMobile() {
     }
   };
 
+  const handleOnNavBarClick = () => {
+    setIsOpenNavBar(!IsOpenNavBar);
+  };
+
   return (
     <div class="container-fluid">
       <div class={`${styles["main-content"]} row`}>
-        <div
-          class={`${styles["control-panel"]} ${styles["control-panel--rounded"]} d-sm-flex flex-column d-flex justify-content-between`}
-        >
+        {IsOpenNavBar && (
           <div
-            class={`${styles["user_info"]} d-flex justify-content-center align-items-center`}
+            class={`${styles["control-panel"]} ${styles["control-panel--rounded"]} d-sm-flex flex-column d-flex justify-content-between ${IsOpenNavBar ? 'open' : ''}`}
           >
-            <img
-              src={userInfo.photoURL ? userInfo.photoURL : "./img/user.png"}
-              alt="Avatar"
-              class={`${styles["avatar"]} col-5 g-0`}
-            />
-            <span class="flex-grow-1">{userInfo.displayName}</span>
-            <i
-              class="fas fa-cog"
-              onClick={() => setIsHoveringSetting(!isHoveringSetting)}
+            <div
+              class={`${styles["user_info"]} d-flex justify-content-center align-items-center`}
             >
-              {isHoveringSetting && (
-                <div
-                  onMouseOver={() => setIsHoveringSetting(true)}
-                  className={`${styles["config_popup"]}`}
-                >
-                  <div
-                    onClick={() => setIsOpenUserInformation(true)}
-                    onMouseOut={() => setIsHoveringSetting(!isHoveringSetting)}
-                  >
-                    User Information
-                  </div>
-                  <div
-                    onClick={() => logout()}
-                    onMouseOut={() => setIsHoveringSetting(!isHoveringSetting)}
-                  >
-                    Sign Out
-                  </div>
-                </div>
-              )}
-            </i>
-          </div>
+              <imgIsOpenNavBar
+                src={userInfo.photoURL ? userInfo.photoURL : "./img/user.png"}
+                alt="Avatar"
+                class={`${styles["avatar"]} col-5 g-0`}
+              />
+              <span class="flex-grow-1">{userInfo.displayName}</span>
+              <i
+                class="fas fa-cog me-1 ml-1"
+                onClick={() => setIsHoveringSetting(!isHoveringSetting)}
+              >
+              <span class="flex-grow-1"> </span>
+              <i
+                onClick={() => handleOnNavBarClick()}
+                class="fa fa-bars"
+                aria-hidden="true"
+              ></i>
 
-          <div class={`${styles["container-historical-chats"]} flex-grow-1`}>
-            <div class={`${styles["line"]}`}></div>
+                {isHoveringSetting && (
+                  <div
+                    onMouseOver={() => setIsHoveringSetting(true)}
+                    className={`${styles["config_popup"]}`}
+                  >
+                    <div
+                      onClick={() => setIsOpenUserInformation(true)}
+                      onMouseOut={() =>
+                        setIsHoveringSetting(!isHoveringSetting)
+                      }
+                    >
+                      User Information
+                    </div>
+                    <div
+                      onClick={() => logout()}
+                      onMouseOut={() =>
+                        setIsHoveringSetting(!isHoveringSetting)
+                      }
+                    >
+                      Sign Out
+                    </div>
+                  </div>
+                )}
+              </i>
+            </div>
 
-            <HistoricalChats
-              addChatName={addChatName}
-              updateChatName={updateChatName}
-              onChatClick={handleOnChatClick}
-              onCreateChat={handleOnCreateChat}
-              onDeleteChat={handleOnDeleteChat}
-              onEditChat={handleOnEditChat}
-            ></HistoricalChats>
+            <div class={`${styles["container-historical-chats"]} flex-grow-1`}>
+              <div class={`${styles["line"]}`}></div>
+
+              <HistoricalChats
+                addChatName={addChatName}
+                updateChatName={updateChatName}
+                onChatClick={handleOnChatClick}
+                onCreateChat={handleOnCreateChat}
+                onDeleteChat={handleOnDeleteChat}
+                onEditChat={handleOnEditChat}
+              ></HistoricalChats>
+            </div>
           </div>
-        </div>
+        )}
 
         <div
           class={`${styles["chatbot"]} g-0 col-sm-8 col-lg-9 d-flex flex-column align-items-center justify-content-between`}
@@ -113,6 +131,11 @@ export default function MainPageMobile() {
           <div
             class={`${styles["title"]} d-flex justify-content-center align-items-center`}
           >
+            <i
+              onClick={() => handleOnNavBarClick()}
+              class="fa fa-bars"
+              aria-hidden="true"
+            ></i>
             <h1>Cohere Chatbot</h1>
             <img src="./img/thunder.png" alt="thunder" />
           </div>
@@ -137,14 +160,14 @@ export default function MainPageMobile() {
         ></AboutUsModal>
 
         {/* Edit User Modal Here */}
-          {isOpenEditUserInformation && (
+        {isOpenEditUserInformation && (
           <div class={`${styles["editUserModal"]}`}>
             <EditUserModal
               userInfo={getCurrentUser()}
               onClose={() => setIsOpenEditUserInformation(false)}
             ></EditUserModal>
           </div>
-          )}
+        )}
         <div class={`${styles["line"]}`}></div>
         <div
           class={`${styles["about_us"]} d-flex align-items-center`}

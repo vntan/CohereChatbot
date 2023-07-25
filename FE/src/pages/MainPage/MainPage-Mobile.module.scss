@@ -7,20 +7,19 @@ $main_content_bg_color: linear-gradient(
 .main-content {
   background: $main_content_bg_color;
   width: 100vw;
-  height: 100vh;
+  height: 100vh !important;
   overflow: hidden;
-  overflow-y: scroll !important;
 }
 
 .control-panel {
   background-color: #fff;
   flex-grow: 1;
   height: 45vh;
-
+  left: -250px; 
+  transition: left 0.3s ease; /* Add a smooth transition effect */
   & > .user_info {
     height: 50px;
     padding: 10px 10px;
-    // display to the left
 
     & > .avatar {
       vertical-align: middle;
@@ -41,7 +40,7 @@ $main_content_bg_color: linear-gradient(
     & > i {
       position: relative;
       cursor: pointer;
-
+      border: #fff 3px solid;
       & > .config_popup {
         position: absolute;
         transform: translate(-210px, -16px);
@@ -90,45 +89,54 @@ $main_content_bg_color: linear-gradient(
 
 .chatbot {
   height: 100vh;
+}
 
-  .title {
-    & > h1 {
-      font-size: 3em;
-      color: #fff;
-    }
+.title {
+  & > h1 {
+    font-size: 2em;
+    color: #fff;
+    margin-top: 5px;
+  }
 
-    & > img {
-      width: 20px;
-      margin-left: 20px;
-    }
+  & > img {
+    width: 15px;
+    margin-left: 20px;
+  }
+
+  & > i {
+    margin-right: 20px;
+    color: #fff;
+    font-size: 1.5em;
   }
 }
 
 .about_us {
   background-color: #fff;
   height: 8vh;
+  transform: translateY(-4.1rem);
+  margin-bottom: 0;
 }
 
 .editUserModal {
   background-color: #000000;
 }
 
-/* width */
-::-webkit-scrollbar {
-  width: 10px;
-}
+// /* width */
+// ::-webkit-scrollbar {
+//   width: 10px;
+// }
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
+// /* Track */
+// ::-webkit-scrollbar-track {
+//   background: #f1f1f1;
+// }
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
+// /* Handle */
+// ::-webkit-scrollbar-thumb {
+//   background: #888;
+// }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
+// /* Handle on hover */
+// ::-webkit-scrollbar-thumb:hover {
+//   background: #555;
+// }
