@@ -57,33 +57,23 @@ export default function MainPageMobile() {
     setIsOpenNavBar(!IsOpenNavBar);
   };
 
+
   return (
     <div class="container-fluid">
       <div class={`${styles["main-content"]} row`}>
         {IsOpenNavBar && (
           <div
-            class={`${styles["control-panel"]} ${styles["control-panel--rounded"]} d-sm-flex flex-column d-flex justify-content-between ${IsOpenNavBar ? 'open' : ''}`}
+            class={`${styles["control-panel"]} ${styles["control-panel--rounded"]} d-sm-flex flex-column d-flex justify-content-between`}
           >
             <div
               class={`${styles["user_info"]} d-flex justify-content-center align-items-center`}
             >
-              <imgIsOpenNavBar
-                src={userInfo.photoURL ? userInfo.photoURL : "./img/user.png"}
-                alt="Avatar"
-                class={`${styles["avatar"]} col-5 g-0`}
-              />
+              <img src={userInfo.photoURL ? userInfo.photoURL : "./img/user.png"} alt="Avatar" class={`${styles["avatar"]} col-5 g-0`} />
               <span class="flex-grow-1">{userInfo.displayName}</span>
               <i
                 class="fas fa-cog me-1 ml-1"
                 onClick={() => setIsHoveringSetting(!isHoveringSetting)}
               >
-              <span class="flex-grow-1"> </span>
-              <i
-                onClick={() => handleOnNavBarClick()}
-                class="fa fa-bars"
-                aria-hidden="true"
-              ></i>
-
                 {isHoveringSetting && (
                   <div
                     onMouseOver={() => setIsHoveringSetting(true)}
@@ -108,6 +98,11 @@ export default function MainPageMobile() {
                   </div>
                 )}
               </i>
+
+              <i
+                onClick={() => handleOnNavBarClick()}
+                class="fa fa-bars"
+              ></i>
             </div>
 
             <div class={`${styles["container-historical-chats"]} flex-grow-1`}>
