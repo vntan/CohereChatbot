@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { logout, getCurrentUser } from "../../utilities/firebase";
+import {
+  redirect,
+} from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./MainPage-Desktop.module.scss";
 import AboutUsModal from "../../components/AboutUsModal/AboutUsModal";
@@ -53,6 +56,11 @@ export default function MainPageDesktop() {
     }
   };
 
+  const logOutUser = () => {
+    logout();
+    redirect("/", { replace: true });
+  };
+
   return (
     <div class="container-fluid">
       <div class={`${styles["main-content"]} row`}>
@@ -84,7 +92,7 @@ export default function MainPageDesktop() {
                     User Information
                   </div>
                   <div
-                    onClick={() => logout()}
+                    onClick={logOutUser}
                     onMouseOut={() => setIsHoveringSetting(!isHoveringSetting)}
                   >
                     Sign Out

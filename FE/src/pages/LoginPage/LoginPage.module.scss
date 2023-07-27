@@ -31,7 +31,7 @@ $background-color-secondary: #000;
 
   &-title {
     margin: 0;
-    font-size: 48px;
+    font-size: 35px;
     font-weight: 900;
   }
 
@@ -55,8 +55,11 @@ $background-color-secondary: #000;
   }
 
   &-loginForm {
+    display: flex;
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
     background: rgba(2, 87, 255, 0.989) 50%;
   }
 }
@@ -79,7 +82,6 @@ $background-color-secondary: #000;
 }
 
 form {
-  
   div {
     margin-bottom: 10px;
     label {
@@ -101,7 +103,7 @@ form {
       &:focus,
       &:active:focus {
         color: #000;
-        outline: none;  
+        outline: none;
         &::placeholder {
           position: relative;
           -webkit-transform: translateY(-30px);
@@ -241,5 +243,36 @@ form {
 
   .mainContent-loginForm > div {
     width: 65% !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .header {
+    position: relative;
+    font-size: 20px;
+    padding-bottom: 2em;
+    color: #fff;
+
+    &-firstChild {
+      border: #fff 1px solid;
+      width: 60%;
+      position: absolute;
+      right: 0;
+      translate: 15% -10px;
+    }
+
+    &-title {
+      margin: 0;
+      font-size: 35px;
+      font-weight: 900;
+    }
+
+    &-lastChild {
+      border: #fff 1px solid;
+      width: 60%;
+      position: absolute;
+      left: 0;
+      transform: translateX(-24%);
+    }
   }
 }
