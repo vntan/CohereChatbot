@@ -15,7 +15,7 @@ const formatDate = (date) => {
         
         return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + "  " + strTime;
     } catch (error) {
-        console.log(error)
+        //console.log(error)
         return date
     }
 };

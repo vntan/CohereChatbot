@@ -1,4 +1,4 @@
-import { FirebaseError, initializeApp } from "firebase/app";
+import { initializeApp } from "firebase/app";
 import {
   GoogleAuthProvider,
   getAuth,
@@ -9,14 +9,14 @@ import {
   sendPasswordResetEmail,
   signOut,
   updatePassword,
-  updateProfile 
+  updateProfile,
 } from "firebase/auth";
 
 import {
   getStorage,
   ref,
   uploadBytesResumable,
-  getDownloadURL 
+  getDownloadURL,
 } from "firebase/storage";
 
 const firebaseConfig = {
@@ -81,18 +81,17 @@ const logout = () => {
 const changePassword = async (newPassword) => {
   try {
     const user = auth.currentUser;
-    await updatePassword(user, newPassword)
-    console.log("Password Updated!");
+    await updatePassword(user, newPassword);
+    //console.log("Password Updated!");
   } catch (err) {
-      console.error(err.code);
-      if (err.code == 'auth/requires-recent-login'){
-        reauthenticateWithPopup(auth.currentUser, googleProvider)
+    console.error(err.code);
+    if (err.code === "auth/requires-recent-login") {
+      reauthenticateWithPopup(auth.currentUser, googleProvider)
         .then(async (result) => {
           await changePassword(newPassword);
-        })  
-        .catch((error) => {
-        });
-      }
+        })
+        .catch((error) => {});
+    }
   }
 };
 
@@ -109,45 +108,42 @@ const updateDisplaynameUserProfile = async (displayName) => {
     await updateProfile(auth.currentUser, {
       displayName,
     });
-    console.log("DisplayName Updated!");
+    //console.log("DisplayName Updated!");
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
-}
+};
 
 const updatePhotoURLUserProfile = async (photoURL) => {
   const auth = getAuth();
   try {
     await updateProfile(auth.currentUser, {
-        photoURL,
+      photoURL,
     });
-    console.log("PhotoURL Updated!");
+    //console.log("PhotoURL Updated!");
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
-}
-
-
-
+};
 
 const uploadFile = (filename, file, cb) => {
-  const storageRef = ref(storage,`/files/${filename}`)
+  const storageRef = ref(storage, `/files/${filename}`);
   const uploadTask = uploadBytesResumable(storageRef, file);
 
   uploadTask.on(
-      "state_changed",
-      (snapshot) => {},
-      (err) => {console.log(err); cb(null)},
-      async () => {
-          // download url
-          await getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-              cb(url);
-          });
-      }
-  ); 
-}
-
-
+    "state_changed",
+    (snapshot) => {},
+    (err) => {
+      cb(null);
+    },
+    async () => {
+      // download url
+      await getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+        cb(url);
+      });
+    }
+  );
+};
 
 export {
   auth,
@@ -161,6 +157,5 @@ export {
   getCurrentUser,
   uploadFile,
   updateDisplaynameUserProfile,
-  updatePhotoURLUserProfile
-  
+  updatePhotoURLUserProfile,
 };
