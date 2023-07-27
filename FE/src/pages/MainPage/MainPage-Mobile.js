@@ -16,9 +16,11 @@ export default function MainPageMobile() {
   const [isOpenEditUserInformation, setIsOpenEditUserInformation] =
     useState(false);
   const [updateChatName, setUpdateChatName] = useState({});
+  const [isOnAddChatName, setOnAddChatName] = useState(false);
   const [addChatName, setAddChatName] = useState({});
   const [nameChatObj, setNameChatObj] = useState({});
   const [IsOpenNavBar, setIsOpenNavBar] = useState(false);
+  const [IsOpenChatbotDialog, setIsOpenChatbotDialog] = useState(true);
 
   useEffect(() => {
     setUserInfo(getCurrentUser());
@@ -55,91 +57,97 @@ export default function MainPageMobile() {
 
   const handleOnNavBarClick = () => {
     setIsOpenNavBar(!IsOpenNavBar);
+    setIsOpenChatbotDialog(!IsOpenChatbotDialog);
   };
-
 
   return (
     <div class="container-fluid">
       <div class={`${styles["main-content"]} row`}>
-        {IsOpenNavBar && (
-          <div
-            class={`${styles["control-panel"]} ${styles["control-panel--rounded"]} d-sm-flex flex-column d-flex justify-content-between`}
-          >
-            <div
-              class={`${styles["user_info"]} d-flex justify-content-center align-items-center`}
-            >
-              <img src={userInfo.photoURL ? userInfo.photoURL : "./img/user.png"} alt="Avatar" class={`${styles["avatar"]} col-5 g-0`} />
-              <span class="flex-grow-1">{userInfo.displayName}</span>
-              <i
-                class="fas fa-cog me-1 ml-1"
-                onClick={() => setIsHoveringSetting(!isHoveringSetting)}
-              >
-                {isHoveringSetting && (
-                  <div
-                    onMouseOver={() => setIsHoveringSetting(true)}
-                    className={`${styles["config_popup"]}`}
-                  >
-                    <div
-                      onClick={() => setIsOpenUserInformation(true)}
-                      onMouseOut={() =>
-                        setIsHoveringSetting(!isHoveringSetting)
-                      }
-                    >
-                      User Information
-                    </div>
-                    <div
-                      onClick={() => logout()}
-                      onMouseOut={() =>
-                        setIsHoveringSetting(!isHoveringSetting)
-                      }
-                    >
-                      Sign Out
-                    </div>
-                  </div>
-                )}
-              </i>
-
-              <i
-                onClick={() => handleOnNavBarClick()}
-                class="fa fa-bars"
-              ></i>
-            </div>
-
-            <div class={`${styles["container-historical-chats"]} flex-grow-1`}>
-              <div class={`${styles["line"]}`}></div>
-
-              <HistoricalChats
-                addChatName={addChatName}
-                updateChatName={updateChatName}
-                onChatClick={handleOnChatClick}
-                onCreateChat={handleOnCreateChat}
-                onDeleteChat={handleOnDeleteChat}
-                onEditChat={handleOnEditChat}
-              ></HistoricalChats>
-            </div>
-          </div>
-        )}
-
         <div
           class={`${styles["chatbot"]} g-0 col-sm-8 col-lg-9 d-flex flex-column align-items-center justify-content-between`}
         >
           <div
             class={`${styles["title"]} d-flex justify-content-center align-items-center`}
           >
-            <i
-              onClick={() => handleOnNavBarClick()}
-              class="fa fa-bars"
-              aria-hidden="true"
-            ></i>
+            <i class="fa fa-bars" onClick={() => handleOnNavBarClick()}></i>
             <h1>Cohere Chatbot</h1>
             <img src="./img/thunder.png" alt="thunder" />
           </div>
+          {/* control-panel here */}
+          {IsOpenNavBar && (
+            <div
+              class={`${styles["control-panel"]} ${styles["control-panel--rounded"]} d-sm-flex flex-column d-flex justify-content-between`}
+            >
+              <div
+                class={`${styles["user_info"]} d-flex justify-content-center align-items-center`}
+              >
+                <img
+                  src={userInfo.photoURL ? userInfo.photoURL : "./img/user.png"}
+                  alt="Avatar"
+                  class={`${styles["avatar"]} col-5 g-0`}
+                />
+                <span class="flex-grow-1">{userInfo.displayName}</span>
+                <i
+                  class="fas fa-cog me-1 ml-1"
+                  onClick={() => setIsHoveringSetting(!isHoveringSetting)}
+                >
+                  {isHoveringSetting && (
+                    <div
+                      onMouseOver={() => setIsHoveringSetting(true)}
+                      className={`${styles["config_popup"]}`}
+                    >
+                      <div
+                        onClick={() => setIsOpenUserInformation(true)}
+                        onMouseOut={() =>
+                          setIsHoveringSetting(!isHoveringSetting)
+                        }
+                      >
+                        User Information
+                      </div>
+                      <div
+                        onClick={() => logout()}
+                        onMouseOut={() =>
+                          setIsHoveringSetting(!isHoveringSetting)
+                        }
+                      >
+                        Sign Out
+                      </div>
+                    </div>
+                  )}
+                </i>
+                <i
+                  onClick={() => handleOnNavBarClick()}
+                  class="fa fa-times"
+                ></i>
+              </div>
 
-          <ChatbotDialog
-            setOnAddChatName={setAddChatName}
-            setOnUpdateChatName={setUpdateChatName}
-            nameChat={nameChatObj}
-          ></ChatbotDialog>
+              <div
+                class={`${styles["container-historical-chats"]} flex-grow-1`}
+                onClick={() => handleOnNavBarClick()}
+              >
+                <div class={`${styles["line"]}`}></div>
+
+                <HistoricalChats
+                  isOnAddChatName={isOnAddChatName}
+                  addChatName={addChatName}
+                  updateChatName={updateChatName}
+                  onChatClick={handleOnChatClick}
+                  onCreateChat={handleOnCreateChat}
+                  onDeleteChat={handleOnDeleteChat}
+                  onEditChat={handleOnEditChat}
+                ></HistoricalChats>
+              </div>
+            </div>
+          )}
+          {/* chatbot-dialog here */}
+          {IsOpenChatbotDialog && (
+            <ChatbotDialog
+              setOnAddChatName={setOnAddChatName}
+              setChatName={setAddChatName}
+              setOnUpdateChatName={setUpdateChatName}
+              nameChat={nameChatObj}
+            ></ChatbotDialog>
+          )}
         </div>
 
         <UserInformationModal

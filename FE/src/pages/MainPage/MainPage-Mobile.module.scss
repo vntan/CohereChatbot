@@ -11,10 +11,10 @@ $main_content_bg_color: linear-gradient(
 }
 
 .control-panel {
-  background-color: #fff;  
-  transition: transform 1s ease;
-  overflow-y: scroll !important;
-  height: 45vh;
+  background-color: #fff;
+  width: 100vw;
+  height: 100vh;
+  transition: left 0.3s ease-in-out;
 
   & > .user_info {
     height: 50px;
@@ -83,6 +83,11 @@ $main_content_bg_color: linear-gradient(
     @extend .user_info;
     cursor: pointer;
     background-color: #fff;
+
+    & > .line {
+      width: 100%;
+      border: #000000 1px solid;
+    }
   }
 }
 
@@ -118,4 +123,3 @@ $main_content_bg_color: linear-gradient(
 .editUserModal {
   background-color: #000000;
 }
-
