@@ -10,6 +10,10 @@ import time
 
 apis = Blueprint('apis', __name__, url_prefix='/apis')
 
+@apis.get('/testing')
+def hello():
+    return "<p>Hello, World!</p>"
+
 
 @apis.post('/getHistoricalChat')
 def getHistoricalChat():
