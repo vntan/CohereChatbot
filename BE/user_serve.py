@@ -51,20 +51,23 @@ def answerUserQuestion(uid, chatID, question):
 
     if profile['code'] == 200:
         return profile['answer'], profile['answerTime']
-    else: return None
+    else: return None, time.ctime(time.time())
 
 
 
 api_keys = [
-    {"key": "t7PsmTR4WNiJDsYIGaUqzK8XFF2M8EAdxDNXtHqk",
-     'count': 5, 'ttlc': -1,
-     'estimateGeneration': 5000, 'ttlg': -1},
+    # {"key": "t7PsmTR4WNiJDsYIGaUqzK8XFF2M8EAdxDNXtHqk",
+    #  "model": 'f6e5d169-b58c-4665-b7f9-4363cefb70d1-ft',
+    #  'count': 5, 'ttlc': -1,
+    #  'estimateGeneration': 5000, 'ttlg': -1},
     {"key": "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq",
+     "model": 'command-nightly',
      'count': 5, 'ttlc': -1,
      'estimateGeneration': 5000, 'ttlg': -1},
-     {"key": "P68oMAjce3XntCylodlI129uCEs2DrDLvr2dydzG",
-     'count': 5, 'ttlc': -1,
-     'estimateGeneration': 5000, 'ttlg': -1}
+    # {"key": "P68oMAjce3XntCylodlI129uCEs2DrDLvr2dydzG",
+    #  "model": 'command-nightly',
+    #  'count': 5, 'ttlc': -1,
+    #  'estimateGeneration': 5000, 'ttlg': -1}
 ]
 
 
@@ -235,7 +238,7 @@ def processAPIKey():
                 key["estimateGeneration"] = 5000
 
         if key["count"] > 0 and key["estimateGeneration"] > 0:
-            APIs_available += [key["key"]] * \
+            APIs_available += [key] * \
                 min(key["count"], key["estimateGeneration"])
     return APIs_available
 
@@ -277,8 +280,8 @@ def processCohere(profile, key):
 
         conv_dict = chat_ref.child('summarized').get()
 
-        cohere_bot = CoHere(key)
-        summarized, conv_list, answer, answer_time = cohere_bot.asked(conv_dict)
+        cohere_bot = CoHere(key['key'])
+        summarized, conv_list, answer, answer_time = cohere_bot.asked(model=key['model'], conv_dict=conv_dict)
 
         #
         print("Done answering", time.ctime(time.time()))

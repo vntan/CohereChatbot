@@ -24,7 +24,7 @@ class CoHere:
     def count_token(self, text):
         return len(self.co.tokenize(text=text))
 
-    def asked(self, conv_dict, max_tokens=500, temp=0):
+    def asked(self, model, conv_dict, max_tokens=500, temp=0):
         conv_list = list(conv_dict.values())
 
         prompt = ('\n'.join(conv_list) + '\nCohere:')
@@ -55,13 +55,30 @@ class CoHere:
 
             prompt = ('\n'.join(conv_list) + '\nCohere:')
 
-
-        answer = self.co.generate(
-              model='command-nightly',
-              prompt=prompt,
-              max_tokens=max_tokens,
-              temperature=temp).generations[0].text
+        try: 
+            print(f'Cohere model: {model}')
+            answer = self.co.generate(
+                model=model,
+                prompt=prompt,
+                max_tokens=max_tokens,
+                temperature=temp).generations[0].text
+        except Exception as error:
+            print(error)
+            if 'model not found' in str(error):
+                print(f'Replace cohere model: command-nightly')
+                answer = self.co.generate(
+                    model='command-nightly',
+                    prompt=prompt,
+                    max_tokens=max_tokens,
+                    temperature=temp).generations[0].text
+            else:
+                raise Exception(error)
+            
         answer = self.cut_answer(answer)
+        if len(answer) == 0:
+            answer = "Cannot find your answer right now!"
+
+
         answer_time = time.ctime(time.time())
 
         

@@ -203,7 +203,11 @@ def ask_question():
             raise Exception('Cannot answer the question')
 
     except Exception as error:
-        return 'Cannot answer the question', 504
+        return jsonify({
+                'answer': 'Cannot answer the question now',
+                'questionTime': question_time,
+                'answerTime': answer_time
+            })
 
 @apis.get('/status')
 def get_status():
