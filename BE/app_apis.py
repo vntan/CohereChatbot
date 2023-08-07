@@ -64,6 +64,36 @@ def loadChat():
         })
     except:
         return 'No chat found', 400
+    
+@apis.post('/loadProcess')
+def loadProcess():
+    json_dict = request.get_json()
+
+    try:
+        uid = json_dict['uid']
+        auth.get_user(uid)
+    except:
+        return 'Cannot find user id', 404
+
+    try:
+        chat_id = json_dict['chatID']
+        chat_ref = db.reference(f"/{uid}/chats/{chat_id}")
+
+        while(True):
+            user_chat = chat_ref.child('conversation').get()
+            user_chat = list(user_chat.values())
+
+            if len(user_chat) % 2 == 0:
+                time.sleep(1)
+            else:
+                break
+            
+
+        return jsonify({
+            'userChat': user_chat
+        })
+    except:
+        return 'No chat found', 400
 
 
 @apis.post('/createChat')
@@ -206,14 +236,18 @@ def ask_question():
             })
         else: 
             chat_ref.child('conversation').push({
-                'message': 'Cannot answer the question now',
+                'message': 'Cannot answer the question right now',
                 'time': answer_time
             })
-            chat_ref.child('summarized').push(add_bot_text('Cannot answer the question now'))
-            raise Exception('Cannot answer the question')
+            chat_ref.child('summarized').push(add_bot_text('Cannot answer the question right now'))
+            return jsonify({
+                'answer': 'Cannot answer the question right now',
+                'questionTime': question_time,
+                'answerTime': answer_time
+            })
 
     except Exception as error:
-        return 'Cannot answer the question', 504
+        return f'Unexpected error: {error}', 504
 
 @apis.get('/status')
 def get_status():

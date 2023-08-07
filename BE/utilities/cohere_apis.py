@@ -12,7 +12,7 @@ class CoHere:
                     "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq": 'command-nightly',
                     "LjBeLev93uC2TrfUDpABHUNtZYPIV5jR87sVPwGU": 'command-nightly',
                 },
-                'model_max_tokens': 500,
+                'model_max_tokens': 4000,
             },
             'viet-cqa':{
                 'model_id': {
@@ -20,7 +20,7 @@ class CoHere:
                     "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq": "3d752238-b4e5-4415-818e-7378acc903da-ft",
                     "LjBeLev93uC2TrfUDpABHUNtZYPIV5jR87sVPwGU": "5fe319f0-e484-48ce-b3f1-4c90945b342d-ft",
                 },
-                'model_max_tokens': 500
+                'model_max_tokens': 2000,
             }
         }
 
@@ -45,9 +45,11 @@ class CoHere:
 
     def count_token(self, text):
         return len(self.co.tokenize(text=text))
+    
+    def is_exceed_max_tokens(self, model, prompt, max_tokens):
+        return self.count_token(prompt) + max_tokens >= model['model_max_tokens']
 
-    def asked(self, conv_dict, model, key, temp=0):
-        conv_list = list(conv_dict.values())
+    def asked(self, conv_dict, model, key, temp=0, max_tokens=500):
 
         if model in list(self.models.keys()) and key["key"] in list(self.models[model]["model_id"].keys()):
             #Copy the settings of the model
@@ -63,11 +65,13 @@ class CoHere:
 
         print(model['model_id'])
 
+        conv_list = list(conv_dict.values())
+
         prompt = ('\n'.join(conv_list) + '\nCohere:')
 
         summarized = False
         
-        if self.count_token(prompt) > 3200:
+        if self.is_exceed_max_tokens(model, prompt, max_tokens):
             summarized = True
 
             back_size = (int)(len(conv_list)/7)
@@ -95,15 +99,18 @@ class CoHere:
         answer = self.co.generate(
               model=model["model_id"],
               prompt=prompt,
-              max_tokens=model["model_max_tokens"],
+              max_tokens=max_tokens,
               temperature=temp).generations[0].text
-        answer = self.cut_answer(answer)
         answer_time = time.ctime(time.time())
-
         
-        conv_list.append(self.add_bot_text(self.clean_text(answer)))
+        answer = self.cut_answer(answer)
+        answer = self.clean_text(answer)
+        if len(answer) == 0:
+            answer = "Cohere cannot answer this question"
+             
+        conv_list.append(self.add_bot_text(answer))
 
-        return summarized, conv_list, self.clean_text(answer), answer_time
+        return summarized, conv_list, answer, answer_time
     
     def summarize(self, conserv, temp=0, command=''):
         return self.co.summarize(text=conserv,

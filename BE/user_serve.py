@@ -52,7 +52,7 @@ def answerUserQuestion(uid, chatID, question, model):
 
     if profile['code'] == 200:
         return profile['answer'], profile['answerTime']
-    else: return None
+    else: return None, time.ctime(time.time())
 
 
 
@@ -295,10 +295,8 @@ def processCohere(profile, key):
 
         if summarized:
             chat_ref.child('summarized').delete()
-
             for i in range(len(conv_list)):
                 chat_ref.child('summarized').push(conv_list[i])
-
         else:
             chat_ref.child('summarized').push(conv_list[-1])
 

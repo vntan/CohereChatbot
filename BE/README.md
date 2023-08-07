@@ -28,7 +28,7 @@ Error Code:
 ### 2. /loadChat
 URL: /loadChat  
 Method: POST  
-Description: Get one chat messages base on chat name  
+Description: Get one chat messages base on chat ID  
 Data Request:  
 {  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
@@ -46,8 +46,42 @@ Error Code:
 400: Cannot find chat with requested chat ID  
 404: Cannot find user id   
 
+### 3. /loadProcess
+URL: /loadProcess  
+Method: POST  
+Description: Get one chat messages base on chat ID, waiting till get all message if Cohere is serving this chat.  
+Data Request:  
+{  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatID": Chat ID  
+}  
+Return Value:  
+{  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"userChat": Array contains user's chat, each element in array will follow this format:  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"message": User/Bot message,  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"time": User question/Bot answer time  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}  
+}  
+Error Code:  
+400: Cannot find chat with requested chat ID  
+404: Cannot find user id 
 
-### 3. /createChat
+### 4. /models
+URL: /models  
+Method: GET  
+Description: Get all the model name (currently support command-nightly and viet-cqa) 
+
+Return Value:  
+[  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Model name 1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Model name 2
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Model name n
+
+]  
+
+### 5. /createChat
 URL: /createChat  
 Method: POST  
 Description: Create a chat base on chat name  
@@ -66,7 +100,7 @@ Error Code:
 404: Cannot find user id  
 504: Cannot create chat
 
-### 4. /question
+### 6. /question
 URL: /question  
 Method: POST  
 Description: Questioning Cohere  
@@ -88,7 +122,7 @@ Error Code:
 504: Server is overloaded  
 
 
-### 5. /renameChat
+### 7. /renameChat
 URL: /renameChat  
 Method: POST  
 Description: Deleta a chat base on chat name  
@@ -108,7 +142,7 @@ Error Code:
 504: Cannot rename the chat
 
 
-### 6. /deleteChat
+### 8. /deleteChat
 URL: /deleteChat  
 Method: POST  
 Description: Delete a chat base on chat name  
