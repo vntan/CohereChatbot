@@ -160,7 +160,7 @@ def detele_chat():
         return 'Cannot delete the chat', 504
 
 
-@apis.post('/models')
+@apis.get('/models')
 def get_models_name():
     co = CoHere("")
     return co.get_models()
