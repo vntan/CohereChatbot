@@ -3,21 +3,22 @@ import time
 
 class CoHere:
     def __init__(self, api_key):
-        self.co = cohere.Client(f'{api_key}')
+        if api_key is not None:
+            self.co = cohere.Client(f'{api_key}')
         self.models = {
             'command-nightly': {
                 'model_id': {
                     "t7PsmTR4WNiJDsYIGaUqzK8XFF2M8EAdxDNXtHqk": 'command-nightly',
                     "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq": 'command-nightly',
-                    "P68oMAjce3XntCylodlI129uCEs2DrDLvr2dydzG": 'command-nightly',
+                    "LjBeLev93uC2TrfUDpABHUNtZYPIV5jR87sVPwGU": 'command-nightly',
                 },
                 'model_max_tokens': 500,
             },
-            'vietgpt':{
+            'viet-cqa':{
                 'model_id': {
-                    "t7PsmTR4WNiJDsYIGaUqzK8XFF2M8EAdxDNXtHqk": "abcxyz",
-                    "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq": "abcxyz",
-                    "P68oMAjce3XntCylodlI129uCEs2DrDLvr2dydzG": "abcxyz",
+                    "t7PsmTR4WNiJDsYIGaUqzK8XFF2M8EAdxDNXtHqk": "f6e5d169-b58c-4665-b7f9-4363cefb70d1-ft",
+                    "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq": "3d752238-b4e5-4415-818e-7378acc903da-ft",
+                    "LjBeLev93uC2TrfUDpABHUNtZYPIV5jR87sVPwGU": "5fe319f0-e484-48ce-b3f1-4c90945b342d-ft",
                 },
                 'model_max_tokens': 500
             }
@@ -48,12 +49,12 @@ class CoHere:
     def asked(self, conv_dict, model, key, temp=0):
         conv_list = list(conv_dict.values())
 
-        if model in self.models.keys() and key["key"] in self.models[model]["model_id"].keys():
+        if model in list(self.models.keys()) and key["key"] in list(self.models[model]["model_id"].keys()):
             #Copy the settings of the model
             model = self.models[model].copy()
-            # Change model id for specific api key.
-            model['model_id'] = self.models[model]["model_id"][key["key"]]
 
+            # Change model id for specific api key.
+            model['model_id'] = model["model_id"][key["key"]]
         else: 
             #Copy the settings of the model
             model = self.models['command-nightly'].copy()

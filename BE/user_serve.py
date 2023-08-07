@@ -63,7 +63,7 @@ api_keys = [
     {"key": "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq",
      'count': 5, 'ttlc': -1,
      'estimateGeneration': 5000, 'ttlg': -1},
-     {"key": "P68oMAjce3XntCylodlI129uCEs2DrDLvr2dydzG",
+     {"key": "LjBeLev93uC2TrfUDpABHUNtZYPIV5jR87sVPwGU",
      'count': 5, 'ttlc': -1,
      'estimateGeneration': 5000, 'ttlg': -1}
 ]
@@ -280,6 +280,7 @@ def processCohere(profile, key):
 
         conv_dict = chat_ref.child('summarized').get()
 
+       
         cohere_bot = CoHere(key['key'])
         summarized, conv_list, answer, answer_time = cohere_bot.asked(conv_dict, model=model, key=key)
 

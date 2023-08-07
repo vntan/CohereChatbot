@@ -162,7 +162,7 @@ def detele_chat():
 
 @apis.get('/models')
 def get_models_name():
-    co = CoHere("")
+    co = CoHere(None)
     return co.get_models()
 
 
