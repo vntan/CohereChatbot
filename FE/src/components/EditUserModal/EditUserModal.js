@@ -6,6 +6,7 @@ import {
   updateDisplaynameUserProfile,
   updatePhotoURLUserProfile,
   changePassword,
+  getCurrentUser,
 } from "../../utilities/firebase";
 
 export default function EditUserModal({ userInfo, onClose }) {
@@ -20,6 +21,10 @@ export default function EditUserModal({ userInfo, onClose }) {
   const [uploadLocalFile, setUploadLocalFile] = useState();
   const [isProcess, setProcess] = useState(false);
   const inputUploadFileRef = useRef(null);
+
+  useEffect(()=>{
+    userInfo = getCurrentUser();
+  }, [])
 
   useEffect(() => {
     if (!uploadLocalFile) {
@@ -61,7 +66,8 @@ export default function EditUserModal({ userInfo, onClose }) {
     setProcess(true);
 
     if (uploadLocalFile) {
-      uploadFile(String.toString(userInfo.uid), uploadLocalFile, async (urlImage) => {
+      
+      uploadFile(String(userInfo.uid), uploadLocalFile, async (urlImage) => {
         if (urlImage) {
           await updatePhotoURLUserProfile(urlImage);
           setURLImage(urlImage);

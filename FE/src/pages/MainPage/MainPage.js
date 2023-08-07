@@ -5,7 +5,7 @@ import MainPageMobile from './MainPage-Mobile';
 
 export default function MainPage() {
     const [width, setWidth] = React.useState(window.innerWidth);
-    const breakpoint = 576;
+    const breakpoint = 580;
 
     React.useEffect(() => {
         const handleWindowResize = () => setWidth(window.innerWidth)
