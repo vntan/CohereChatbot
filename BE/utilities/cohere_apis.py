@@ -6,7 +6,19 @@ class CoHere:
         self.co = cohere.Client(f'{api_key}')
         self.models = {
             'command-nightly': {
-                'model_id': 'command-nightly',
+                'model_id': {
+                    "t7PsmTR4WNiJDsYIGaUqzK8XFF2M8EAdxDNXtHqk": 'command-nightly',
+                    "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq": 'command-nightly',
+                    "P68oMAjce3XntCylodlI129uCEs2DrDLvr2dydzG": 'command-nightly',
+                },
+                'model_max_tokens': 500,
+            },
+            'vietgpt':{
+                'model_id': {
+                    "t7PsmTR4WNiJDsYIGaUqzK8XFF2M8EAdxDNXtHqk": "abcxyz",
+                    "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq": "abcxyz",
+                    "P68oMAjce3XntCylodlI129uCEs2DrDLvr2dydzG": "abcxyz",
+                },
                 'model_max_tokens': 500
             }
         }
@@ -36,9 +48,18 @@ class CoHere:
     def asked(self, conv_dict, model, key, temp=0):
         conv_list = list(conv_dict.values())
 
-        if model in key["supportModels"] and model in self.models.keys():
-            model = self.models[model]
-        else: model = self.models['command-nightly']
+        if model in self.models.keys() and key["key"] in self.models[model]["model_id"].keys():
+            #Copy the settings of the model
+            model = self.models[model].copy()
+            # Change model id for specific api key.
+            model['model_id'] = self.models[model]["model_id"][key["key"]]
+
+        else: 
+            #Copy the settings of the model
+            model = self.models['command-nightly'].copy()
+            # Change model id for specific api key.
+            model['model_id'] = 'command-nightly'
+
         print(model['model_id'])
 
         prompt = ('\n'.join(conv_list) + '\nCohere:')

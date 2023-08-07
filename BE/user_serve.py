@@ -59,15 +59,12 @@ def answerUserQuestion(uid, chatID, question, model):
 api_keys = [
     {"key": "t7PsmTR4WNiJDsYIGaUqzK8XFF2M8EAdxDNXtHqk",
      'count': 5, 'ttlc': -1,
-     'supportModels': ['command-nightly'],
      'estimateGeneration': 5000, 'ttlg': -1},
     {"key": "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq",
      'count': 5, 'ttlc': -1,
-     'supportModels': ['command-nightly'],
      'estimateGeneration': 5000, 'ttlg': -1},
      {"key": "P68oMAjce3XntCylodlI129uCEs2DrDLvr2dydzG",
      'count': 5, 'ttlc': -1,
-     'supportModels': ['command-nightly'],
      'estimateGeneration': 5000, 'ttlg': -1}
 ]
 
