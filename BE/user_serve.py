@@ -15,13 +15,14 @@ wait_list = {}
 process_list = {}
 #
 
-def answerUserQuestion(uid, chatID, question):
+def answerUserQuestion(uid, chatID, question, model):
     profile = {
         'isServed': False,
         'data': {
             'uid': uid,
             'chatID': chatID,
-            'question': question
+            'question': question,
+            'model': model
         },
         'status': False,
         'timeout': time.time()
@@ -58,12 +59,15 @@ def answerUserQuestion(uid, chatID, question):
 api_keys = [
     {"key": "t7PsmTR4WNiJDsYIGaUqzK8XFF2M8EAdxDNXtHqk",
      'count': 5, 'ttlc': -1,
+     'supportModels': ['command-nightly'],
      'estimateGeneration': 5000, 'ttlg': -1},
     {"key": "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq",
      'count': 5, 'ttlc': -1,
+     'supportModels': ['command-nightly'],
      'estimateGeneration': 5000, 'ttlg': -1},
      {"key": "P68oMAjce3XntCylodlI129uCEs2DrDLvr2dydzG",
      'count': 5, 'ttlc': -1,
+     'supportModels': ['command-nightly'],
      'estimateGeneration': 5000, 'ttlg': -1}
 ]
 
@@ -141,6 +145,7 @@ def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_lim
             user_str = user.split('-')
             userID = user_str[0]
             questionID = user_str[1]
+            model =  user_waiting_list["users"][userID][questionID]["data"]["model"]
             chatID = user_waiting_list["users"][userID][questionID]["data"]["chatID"]
         except:
             continue
@@ -196,6 +201,7 @@ def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_lim
         result.append({
             'userID': userID,
             'questionID': questionID,
+            'model': model,
             'data': user_waiting_list["users"][userID][questionID]["data"],
         })
         list_user_str += f"{userID}-{chatID} "
@@ -209,7 +215,6 @@ def select_user_to_serve(user_waiting_list, max_users=5, time_limit=60, slot_lim
 '''
 Đếm API key cho hiện có để process
 '''
-
 
 def processAPIKey():
     global api_keys
@@ -235,7 +240,7 @@ def processAPIKey():
                 key["estimateGeneration"] = 5000
 
         if key["count"] > 0 and key["estimateGeneration"] > 0:
-            APIs_available += [key["key"]] * \
+            APIs_available += [key] * \
                 min(key["count"], key["estimateGeneration"])
     return APIs_available
 
@@ -264,6 +269,7 @@ def processCohere(profile, key):
     try:
         uid = profile["userID"]
         questionid = profile["questionID"]
+        model = profile["model"]
         user_waiting_list['users'][uid][questionid]["isServed"] = True
         user_waiting_list["user_queue"].remove(f"{uid}-{questionid}")
 
@@ -277,8 +283,8 @@ def processCohere(profile, key):
 
         conv_dict = chat_ref.child('summarized').get()
 
-        cohere_bot = CoHere(key)
-        summarized, conv_list, answer, answer_time = cohere_bot.asked(conv_dict)
+        cohere_bot = CoHere(key['key'])
+        summarized, conv_list, answer, answer_time = cohere_bot.asked(conv_dict, model=model, key=key)
 
         #
         print("Done answering", time.ctime(time.time()))

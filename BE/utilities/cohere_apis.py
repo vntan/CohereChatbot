@@ -4,6 +4,15 @@ import time
 class CoHere:
     def __init__(self, api_key):
         self.co = cohere.Client(f'{api_key}')
+        self.models = {
+            'command-nightly': {
+                'model_id': 'command-nightly',
+                'model_max_tokens': 500
+            }
+        }
+
+    def get_models(self):
+        return list(self.models.keys())
 
     def add_bot_text(self, text):
         return 'Cohere: ' + text
@@ -24,8 +33,13 @@ class CoHere:
     def count_token(self, text):
         return len(self.co.tokenize(text=text))
 
-    def asked(self, conv_dict, max_tokens=500, temp=0):
+    def asked(self, conv_dict, model, key, temp=0):
         conv_list = list(conv_dict.values())
+
+        if model in key["supportModels"] and model in self.models.keys():
+            model = self.models[model]
+        else: model = self.models['command-nightly']
+        print(model['model_id'])
 
         prompt = ('\n'.join(conv_list) + '\nCohere:')
 
@@ -57,9 +71,9 @@ class CoHere:
 
 
         answer = self.co.generate(
-              model='command-nightly',
+              model=model["model_id"],
               prompt=prompt,
-              max_tokens=max_tokens,
+              max_tokens=model["model_max_tokens"],
               temperature=temp).generations[0].text
         answer = self.cut_answer(answer)
         answer_time = time.ctime(time.time())

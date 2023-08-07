@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from utilities.cohere_apis import CoHere
 from utilities.Firebase.firebase_config import auth, db
 from user_serve import answerUserQuestion, add_human_text, add_bot_text
 import uuid
@@ -159,6 +160,12 @@ def detele_chat():
         return 'Cannot delete the chat', 504
 
 
+@apis.post('/models')
+def get_models_name():
+    co = CoHere("")
+    return co.get_models()
+
+
 @apis.post('/question')
 def ask_question():
     json_dict = request.get_json()
@@ -176,6 +183,9 @@ def ask_question():
         if not chat_ref.child('chatName').get():
             return 'No chat found', 400
         
+        
+        model = json_dict['model'] if 'model' in json_dict.keys() else ""
+        
         question_time = time.ctime(time.time())
 
         question = json_dict['question']
@@ -186,7 +196,7 @@ def ask_question():
         })
         chat_ref.child('summarized').push(add_human_text(question))
 
-        answer, answer_time = answerUserQuestion(uid, chat_id, question)
+        answer, answer_time = answerUserQuestion(uid, chat_id, question, model)
         
         if answer != None:
             return jsonify({
