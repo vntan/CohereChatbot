@@ -22,19 +22,32 @@ export default function ChatbotDialog({ setOnAddChatName, setChatName, setOnUpda
             .then((res) => {
                 const data = res.data;
                 setListModels(data);
-                if (data.length > 0) setSelectedModel(data[0])
+                if (data.length > 0) setSelectedModel(data[0]);
             })
-            .catch((err) => {setListModels(['command-nightly']); setSelectedModel(listModels[0]); });
+            .catch((err) => {
+                setListModels(["command-nightly"]);
+                setSelectedModel(listModels[0]);
+            });
     }, []);
 
     useEffect(() => {
         if (chatDialog.length !== 0 && chatDialog.length % 2 === 0 && !isWaitingAnswer) {
             setIsWaitingAnswer(true);
-            //TODO: Load Chats while reload page
-
-            /*
-            Minh nhận câu trả lời => 
-            */
+            axios
+                .post("apis/loadProcess", {
+                    uid: getCurrentUser().uid,
+                    chatID: nameChatObj.chatID,
+                })
+                .then((res) => {
+                    //console.log(res);
+                    const data = res.data;
+                    setChatDialog(data["userChat"]);
+                    setIsWaitingAnswer(false);
+                })
+                .catch((err) => {
+                    //console.log(err);
+                    setIsWaitingAnswer(false);
+                });
         }
     }, [chatDialog]);
 
@@ -51,22 +64,25 @@ export default function ChatbotDialog({ setOnAddChatName, setChatName, setOnUpda
         setChatDialog([]);
         setQuestionInput("");
         setIsWaitingAnswer(false);
-        setLoadingChat(true);
-        axios
-            .post("apis/loadChat", {
-                uid: getCurrentUser().uid,
-                chatID: nameChatObj.chatID,
-            })
-            .then((res) => {
-                //console.log(res);
-                const data = res.data;
-                setChatDialog(data["userChat"]);
-                setLoadingChat(false);
-            })
-            .catch((err) => {
-                //console.log(err);
-                setLoadingChat(false);
-            });
+
+        if (nameChatObj.chatID != null && nameChatObj.chatID !== "") {
+            setLoadingChat(true);
+            axios
+                .post("apis/loadChat", {
+                    uid: getCurrentUser().uid,
+                    chatID: nameChatObj.chatID,
+                })
+                .then((res) => {
+                    //console.log(res);
+                    const data = res.data;
+                    setChatDialog(data["userChat"]);
+                    setLoadingChat(false);
+                })
+                .catch((err) => {
+                    //console.log(err);
+                    setLoadingChat(false);
+                });
+        }
     }, [nameChatObj]);
 
     useEffect(() => {
@@ -106,6 +122,7 @@ export default function ChatbotDialog({ setOnAddChatName, setChatName, setOnUpda
         if (isProcessAddTitle || titleInput === "") return;
         setProcessAddTitle(true);
         setOnAddChatName(true);
+
         axios
             .post("apis/createChat", {
                 uid: getCurrentUser().uid,
@@ -121,11 +138,13 @@ export default function ChatbotDialog({ setOnAddChatName, setChatName, setOnUpda
 
                 setNameChatObj({ ...nameChat });
                 setChatName({ ...nameChat });
+                setTitleInput("");
                 setProcessAddTitle(false);
                 setOnAddChatName(false);
             })
             .catch((err) => {
                 //console.log(err);
+                setTitleInput("");
                 setProcessAddTitle(false);
                 setOnAddChatName(false);
             });
@@ -149,7 +168,7 @@ export default function ChatbotDialog({ setOnAddChatName, setChatName, setOnUpda
                 uid: getCurrentUser().uid,
                 chatID: current_chat.chatID,
                 question: question,
-                model: selectedModel
+                model: selectedModel,
             })
             .then((res) => {
                 //console.log(res);
@@ -185,12 +204,15 @@ export default function ChatbotDialog({ setOnAddChatName, setChatName, setOnUpda
                                 <div>{nameChatObj.chatName}</div>
                                 <div>
                                     <label for="models">Model: </label>
-                                    <select value={selectedModel} id="models" onChange={(e)=>{setSelectedModel(e.target.value)}}>
-                                        {
-                                            listModels.map(model =>{
-                                                return <option value={model}>{model}</option>
-                                            })
-                                        }
+                                    <select
+                                        value={selectedModel}
+                                        id="models"
+                                        onChange={(e) => {
+                                            setSelectedModel(e.target.value);
+                                        }}>
+                                        {listModels.map((model) => {
+                                            return <option value={model}>{model}</option>;
+                                        })}
                                     </select>
                                 </div>
                             </>
@@ -203,6 +225,7 @@ export default function ChatbotDialog({ setOnAddChatName, setChatName, setOnUpda
                                     value={titleInput}
                                     onKeyDown={handleKeyDownTitle}
                                     disabled={isProcessAddTitle}
+                                    placeholder="Input your title"
                                 />
 
                                 <div className={`${isProcessAddTitle ? "d-none" : ""}`}>
