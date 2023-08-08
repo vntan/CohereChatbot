@@ -287,18 +287,19 @@ def processCohere(profile, key):
         #
         print("Done answering", time.ctime(time.time()))
         #
-        
-        chat_ref.child('conversation').push({
-            'message': delete_indicator(conv_list[-1]),
-            'time': answer_time
-        })
 
-        if summarized:
-            chat_ref.child('summarized').delete()
-            for i in range(len(conv_list)):
-                chat_ref.child('summarized').push(conv_list[i])
-        else:
-            chat_ref.child('summarized').push(conv_list[-1])
+        if chat_ref.child('chatName').get():
+            chat_ref.child('conversation').push({
+                'message': delete_indicator(conv_list[-1]),
+                'time': answer_time
+            })
+
+            if summarized:
+                chat_ref.child('summarized').delete()
+                for i in range(len(conv_list)):
+                    chat_ref.child('summarized').push(conv_list[i])
+            else:
+                chat_ref.child('summarized').push(conv_list[-1])
 
         for api in api_keys:
             if api["key"] == key:
