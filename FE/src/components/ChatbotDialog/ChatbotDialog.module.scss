@@ -369,7 +369,7 @@ $color-dot: #2600ff;
             }
 
             & > span {
-              background-color: #00f5ff;
+              background-color: rgb(170,219,30);
               box-shadow: 3px;
               border-radius: 12px;
               padding: 10px;
@@ -378,11 +378,11 @@ $color-dot: #2600ff;
               white-space: pre-line;
             }
           }
-
+  
           &:nth-child(2n) {
             display: flex;
             flex-direction: row-reverse;
-
+  
             & > img {
               vertical-align: middle;
               width: 5vb;
@@ -390,9 +390,9 @@ $color-dot: #2600ff;
               border-radius: 50%;
               align-items: center;
             }
-
+  
             & > span {
-              background-color: rgba(0, 245, 255, 0.5);
+              background-color: rgb(180, 255, 205);
               border-radius: 12px;
               padding: 10px;
               font-family: "Arial";
