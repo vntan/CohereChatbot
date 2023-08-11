@@ -5,7 +5,8 @@ from utilities.Firebase.firebase_config import auth, db
 
 user_waiting_list = {
     'user_queue': [],
-    'users': {}
+    'users': {},
+    'user_id_chat': []
 }
 
 finished_serve = False
@@ -15,7 +16,35 @@ wait_list = {}
 process_list = {}
 #
 
-def answerUserQuestion(uid, chatID, question, model):
+def check_uid_chatID(uid, chatID):
+    global user_waiting_list
+    return f"{uid}-{chatID}" in user_waiting_list['user_id_chat']
+
+def check_uid_chatID_quesTime(uid, chatID, question_time):
+    global user_waiting_list
+    for user_ques in user_waiting_list['user_id_chat']:
+        if f"{uid}-{chatID}" in user_ques and float(user_ques.split('-')[3]) < question_time: # chat id = "uuid-time.time()"
+            return True
+    return False
+
+def answerUserQuestion(uid, chatID, question, model, chat_ref, question_time):
+    global user_waiting_list
+    if check_uid_chatID(uid, chatID):
+        return 400, time.ctime(time.time())
+    user_waiting_list['user_id_chat'].append(f"{uid}-{chatID}-{str(question_time)}")
+    time.sleep(0.5)
+    if check_uid_chatID_quesTime(uid, chatID, question_time):
+        user_waiting_list['user_id_chat'].remove(f"{uid}-{chatID}-{str(question_time)}")
+        return 400, time.ctime(time.time())
+    else:
+        chat_ref.child('conversation').push({
+            'message': question,
+            'time': time.ctime(question_time)
+        })
+        chat_ref.child('summarized').push(add_human_text(question))
+    
+
+
     profile = {
         'isServed': False,
         'data': {
@@ -25,12 +54,12 @@ def answerUserQuestion(uid, chatID, question, model):
             'model': model
         },
         'status': False,
-        'timeout': time.time()
+        'timeout': question_time
     }
     if uid not in user_waiting_list['users'].keys():
         user_waiting_list['users'][uid] = {}
 
-    idQuestion = str(time.time())
+    idQuestion = str(question_time)
     user_waiting_list["user_queue"].append(f"{uid}-{idQuestion}")
     user_waiting_list['users'][uid][idQuestion] = profile
 
@@ -51,8 +80,17 @@ def answerUserQuestion(uid, chatID, question, model):
     else: user_waiting_list['users'][uid].pop(idQuestion)
 
     if profile['code'] == 200:
+        user_waiting_list['user_id_chat'].remove(f"{uid}-{chatID}-{str(question_time)}")
         return profile['answer'], profile['answerTime']
-    else: return None, time.ctime(time.time())
+    else: 
+        answer_time = time.ctime(time.time())
+        chat_ref.child('conversation').push({
+            'message': 'Cannot answer the question right now',
+            'time': answer_time
+        })
+        chat_ref.child('summarized').push(add_bot_text('Cannot answer the question right now'))
+        user_waiting_list['user_id_chat'].remove(f"{uid}-{chatID}-{str(question_time)}")
+        return None, time.ctime(time.time())
 
 
 
@@ -96,6 +134,7 @@ def fill_slot(user_waiting_list, temp_queue, max_users, result, list_user_str):
             'questionID': questionID,
             'data': user_waiting_list["users"][userID][questionID]["data"],
         })
+        list_user_str += f"{userID}-{chatID} "
 
         if len(result) == max_users:
             break
@@ -276,6 +315,8 @@ def processCohere(profile, key):
 
         json_dict = profile['data']
         chat_id = json_dict['chatID']
+
+
         chat_ref = db.reference(f"/{uid}/chats/{chat_id}")
 
         conv_dict = chat_ref.child('summarized').get()
@@ -301,6 +342,8 @@ def processCohere(profile, key):
             else:
                 chat_ref.child('summarized').push(conv_list[-1])
 
+        
+
         for api in api_keys:
             if api["key"] == key:
                 api["count"] -= 1
@@ -323,7 +366,6 @@ def processCohere(profile, key):
     #
     
     print("Terminate process uid")
-
 
 '''
 Xử lí một user quá thời gian cho phép trong db

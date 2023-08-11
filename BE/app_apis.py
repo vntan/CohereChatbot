@@ -211,22 +211,21 @@ def ask_question():
         chat_ref = db.reference(f"/{uid}/chats/{chat_id}")
 
         if not chat_ref.child('chatName').get():
-            return 'No chat found', 400
+            return 'No chat found', 404
         
         
         model = json_dict['model'] if 'model' in json_dict.keys() else ""
         
-        question_time = time.ctime(time.time())
+        question_time = time.time()
 
         question = json_dict['question']
 
-        chat_ref.child('conversation').push({
-            'message': question,
-            'time': question_time
-        })
-        chat_ref.child('summarized').push(add_human_text(question))
+        answer, answer_time = answerUserQuestion(uid, chat_id, question, model, chat_ref, question_time)
 
-        answer, answer_time = answerUserQuestion(uid, chat_id, question, model)
+        question_time = time.ctime(question_time)
+
+        if answer == 400:
+            return "Two question at the same time!", 400
         
         if answer != None:
             return jsonify({
@@ -235,11 +234,6 @@ def ask_question():
                 'answerTime': answer_time
             })
         else: 
-            chat_ref.child('conversation').push({
-                'message': 'Cannot answer the question right now',
-                'time': answer_time
-            })
-            chat_ref.child('summarized').push(add_bot_text('Cannot answer the question right now'))
             return jsonify({
                 'answer': 'Cannot answer the question right now',
                 'questionTime': question_time,
@@ -247,7 +241,8 @@ def ask_question():
             })
 
     except Exception as error:
-        return f'Unexpected error: {error}', 504
+        print(error)
+        return f'Unexpected error: {error}', 500
 
 @apis.get('/status')
 def get_status():

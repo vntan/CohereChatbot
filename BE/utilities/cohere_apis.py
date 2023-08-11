@@ -12,7 +12,7 @@ class CoHere:
                     "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq": 'command-nightly',
                     "LjBeLev93uC2TrfUDpABHUNtZYPIV5jR87sVPwGU": 'command-nightly',
                 },
-                'model_max_tokens': 4000,
+                'model_max_tokens': 4096,
             },
             'viet-cqa':{
                 'model_id': {
@@ -20,7 +20,7 @@ class CoHere:
                     "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq": "3d752238-b4e5-4415-818e-7378acc903da-ft",
                     "LjBeLev93uC2TrfUDpABHUNtZYPIV5jR87sVPwGU": "5fe319f0-e484-48ce-b3f1-4c90945b342d-ft",
                 },
-                'model_max_tokens': 2000,
+                'model_max_tokens': 2048,
             }
         }
 

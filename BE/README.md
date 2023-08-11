@@ -108,7 +108,8 @@ Data Request:
 {  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"uid": User's ID,  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"chatID": Chat ID,  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"question": Question  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"question": Question,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"model": Model use for answer,
 }  
 Return Value:  
 {  
@@ -117,9 +118,9 @@ Return Value:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"answerTime": Cohere answered question time   
 }  
 Error Code:  
-400: Cannot find chat with requested chat ID  
-404: Cannot find user id  
-504: Server is overloaded  
+400: Many question at the same time
+404: Cannot find chat with requested chat ID or Cannot find user id  
+500: Unexpected error
 
 
 ### 7. /renameChat
