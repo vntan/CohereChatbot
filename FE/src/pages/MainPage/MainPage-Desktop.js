@@ -23,7 +23,6 @@ export default function MainPageDesktop() {
   const [addChatName, setAddChatName] = useState({});
   const [nameChatObj, setNameChatObj] = useState({});
 
-
   useEffect(()=>{
     if (localStorage.getItem("CurrentChat") === null)
       localStorage.setItem("CurrentChat", JSON.stringify({}));
