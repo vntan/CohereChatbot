@@ -99,7 +99,7 @@ const changePassword = async (newPassword) => {
 const getCurrentUser = () => {
   const auth = getAuth();
   const user = auth.currentUser;
-
+  if (user === null) return {}
   return user;
 };
 

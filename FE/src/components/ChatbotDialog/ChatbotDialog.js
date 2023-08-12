@@ -133,7 +133,7 @@ export default function ChatbotDialog({ setOnAddChatName, setChatName, setOnUpda
                     chatName: titleInput,
                     createTime: data["createTime"],
                 };
-
+                localStorage.setItem("CurrentChat", JSON.stringify(nameChat));
                 setNameChatObj({ ...nameChat });
                 setChatName({ ...nameChat });
                 setTitleInput("");
@@ -186,6 +186,7 @@ export default function ChatbotDialog({ setOnAddChatName, setChatName, setOnUpda
             })
             .catch((err) => {
                 console.log(err);
+                setIsWaitingAnswer(false);
                 if (err.response.status === 400) {
                     axios
                         .post("apis/loadChat", {
@@ -201,7 +202,6 @@ export default function ChatbotDialog({ setOnAddChatName, setChatName, setOnUpda
                             //console.log(err);
                         });
                 }
-                else setIsWaitingAnswer(false);
             });
     };
 

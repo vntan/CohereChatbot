@@ -3,6 +3,19 @@ from threading import Thread
 import time
 from utilities.Firebase.firebase_config import auth, db
 
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+import json
+
+dotenv_path = Path('./.env')
+load_dotenv(dotenv_path=dotenv_path)
+
+API_KEY = os.getenv('API_KEY')
+f = open(API_KEY)
+api_keys = json.load(f)
+f.close()
+
 user_waiting_list = {
     'user_queue': [],
     'users': {},
@@ -15,6 +28,8 @@ finished_serve = False
 wait_list = {}
 process_list = {}
 #
+
+
 
 def check_uid_chatID(uid, chatID):
     global user_waiting_list
@@ -91,20 +106,6 @@ def answerUserQuestion(uid, chatID, question, model, chat_ref, question_time):
         chat_ref.child('summarized').push(add_bot_text('Cannot answer the question right now'))
         user_waiting_list['user_id_chat'].remove(f"{uid}-{chatID}-{str(question_time)}")
         return None, time.ctime(time.time())
-
-
-
-api_keys = [
-    {"key": "t7PsmTR4WNiJDsYIGaUqzK8XFF2M8EAdxDNXtHqk",
-     'count': 5, 'ttlc': -1,
-     'estimateGeneration': 5000, 'ttlg': -1},
-    {"key": "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq",
-     'count': 5, 'ttlc': -1,
-     'estimateGeneration': 5000, 'ttlg': -1},
-     {"key": "LjBeLev93uC2TrfUDpABHUNtZYPIV5jR87sVPwGU",
-     'count': 5, 'ttlc': -1,
-     'estimateGeneration': 5000, 'ttlg': -1}
-]
 
 
 def delete_indicator(text):

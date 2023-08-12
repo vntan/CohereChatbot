@@ -1,28 +1,25 @@
 import cohere
 import time
 
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+import json
+
+
+dotenv_path = Path('./.env')
+load_dotenv(dotenv_path=dotenv_path)
+
+MODEL = os.getenv('MODEL')
+f = open(MODEL)
+MODEL_DICT = json.load(f)
+f.close()
+
 class CoHere:
     def __init__(self, api_key):
         if api_key is not None:
             self.co = cohere.Client(f'{api_key}')
-        self.models = {
-            'command-nightly': {
-                'model_id': {
-                    "t7PsmTR4WNiJDsYIGaUqzK8XFF2M8EAdxDNXtHqk": 'command-nightly',
-                    "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq": 'command-nightly',
-                    "LjBeLev93uC2TrfUDpABHUNtZYPIV5jR87sVPwGU": 'command-nightly',
-                },
-                'model_max_tokens': 4096,
-            },
-            'viet-cqa':{
-                'model_id': {
-                    "t7PsmTR4WNiJDsYIGaUqzK8XFF2M8EAdxDNXtHqk": "f6e5d169-b58c-4665-b7f9-4363cefb70d1-ft",
-                    "l7WbJRkNdyQWee0Qxmrey2ZOLsyXrFilU9fxKgVq": "3d752238-b4e5-4415-818e-7378acc903da-ft",
-                    "LjBeLev93uC2TrfUDpABHUNtZYPIV5jR87sVPwGU": "5fe319f0-e484-48ce-b3f1-4c90945b342d-ft",
-                },
-                'model_max_tokens': 2048,
-            }
-        }
+        self.models = MODEL_DICT
 
     def get_models(self):
         return list(self.models.keys())

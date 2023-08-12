@@ -2,6 +2,60 @@
 
 Here is BE folder
 
+
+# Set up backend
+Go to .env file, modify these variable to run in your database/environment
+
+### 1. DATABASE_URL
+Firebase Realtime Database url, get when create Realtime Database project, detail [here](https://firebase.google.com/docs/database/admin/start)
+
+### 2. CERFTIFICATE
+Google Firebase private key **json** file, detail [here](https://firebase.google.com/docs/admin/setup#initialize_the_sdk_in_non-google_environments)
+
+### 3. API_KEY
+Link to api key **json** file.
+File contain list of JSON object, each object follow this description:
+[
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;"**key**": "Cohere personal API Trial key",
+&nbsp;&nbsp;&nbsp;&nbsp;"**count**": 5,
+&nbsp;&nbsp;&nbsp;&nbsp;"**ttlc**": -1,
+&nbsp;&nbsp;&nbsp;&nbsp;"**estimateGeneration**": 5000,
+&nbsp;&nbsp;&nbsp;&nbsp;"**ttlg**": -1
+&nbsp;&nbsp;},
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;...
+&nbsp;&nbsp;},
+&nbsp;&nbsp;...
+]
+
+Note:
+* **Bold** name is fixed variable name, unchangable.
+* Normal name is changable.
+
+### 4. MODEL
+Link to model **json** file.
+File contain JSON object, following this description with **bold** name is fixed variable name:
+{
+&nbsp;&nbsp;"Model name 1": {
+&nbsp;&nbsp;&nbsp;&nbsp;"**model_id**": {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Cohere personal API Trial key": "Model name when call Co.Generate",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Cohere personal API Trial key": "Model name when call Co.Generate",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...
+&nbsp;&nbsp;&nbsp;&nbsp;},
+&nbsp;&nbsp;&nbsp;&nbsp;"**model_max_tokens**": 4096
+&nbsp;&nbsp;},
+&nbsp;&nbsp;"Model name 2":  {
+&nbsp;&nbsp;&nbsp;&nbsp;...
+&nbsp;&nbsp;},
+&nbsp;&nbsp;...
+}
+
+Note:
+* **Bold** name is fixed variable name, unchangable.
+* Normal name is changable.
+
+
 # Callable API 
 
 ### 1. /getHistoricalChat
@@ -159,3 +213,11 @@ Return Value:
 Error Code:  
 404: Cannot find user id  
 504: Cannot delete the chat
+
+
+
+
+
+
+
+

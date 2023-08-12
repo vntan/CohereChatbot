@@ -2,9 +2,19 @@ import firebase_admin
 from firebase_admin import auth
 from firebase_admin import db
 
-cred_obj = firebase_admin.credentials.Certificate('./utilities/Firebase/cohere_firebase_config.json')
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+dotenv_path = Path('./.env')
+load_dotenv(dotenv_path=dotenv_path)
+
+DATABASE_URL = os.getenv('DATABASE_URL')
+CERFTIFICATE = os.getenv('CERFTIFICATE')
+
+cred_obj = firebase_admin.credentials.Certificate(CERFTIFICATE)
 default_app = firebase_admin.initialize_app(cred_obj, {
-	'databaseURL':'https://coherechatbot-default-rtdb.asia-southeast1.firebasedatabase.app/'
+	'databaseURL': DATABASE_URL
 	})
 
 
