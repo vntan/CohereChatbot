@@ -63,7 +63,7 @@ export default function ChatbotDialog({ setOnAddChatName, setChatName, setOnUpda
         setQuestionInput("");
         setIsWaitingAnswer(false);
 
-        if (nameChatObj.chatID != null && nameChatObj.chatID !== "") {
+        if (nameChatObj.chatID !== null && nameChatObj.chatID !== "") {
             setLoadingChat(true);
             axios
                 .post("apis/loadChat", {
