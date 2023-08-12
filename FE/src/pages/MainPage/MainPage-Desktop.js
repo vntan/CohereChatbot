@@ -23,6 +23,11 @@ export default function MainPageDesktop() {
   const [addChatName, setAddChatName] = useState({});
   const [nameChatObj, setNameChatObj] = useState({});
 
+
+  useEffect(()=>{
+    setNameChatObj(JSON.parse(localStorage.getItem("CurrentChat")))
+  },[])
+
   useEffect(() => {
     setUserInfo(getCurrentUser());
   }, [isOpenEditUserInformation]);
@@ -36,16 +41,21 @@ export default function MainPageDesktop() {
     setNameChatObj({
       ...nameObj,
     });
+    localStorage.setItem("CurrentChat", JSON.stringify(nameObj));
   };
 
   const handleOnCreateChat = () => {
     setNameChatObj({});
+    localStorage.setItem("CurrentChat", JSON.stringify({}));
   };
 
   const handleOnDeleteChat = (nameObj) => {
-    if (nameObj.chatID === nameChatObj.chatID) {
+    if (nameObj.chatID === nameChatObj.chatID) 
       setNameChatObj({});
-    }
+    
+    const item = JSON.parse(localStorage.getItem("CurrentChat"))
+    if (nameObj.chatID === item.chatID) 
+      localStorage.setItem("CurrentChat", JSON.stringify({}));
   };
 
   const handleOnEditChat = (nameObj) => {

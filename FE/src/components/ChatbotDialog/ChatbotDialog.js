@@ -59,8 +59,6 @@ export default function ChatbotDialog({ setOnAddChatName, setChatName, setOnUpda
     }, [nameChat]);
 
     useEffect(() => {
-        localStorage.setItem("CurrentChat", JSON.stringify(nameChatObj));
-
         setChatDialog([]);
         setQuestionInput("");
         setIsWaitingAnswer(false);
@@ -175,7 +173,7 @@ export default function ChatbotDialog({ setOnAddChatName, setChatName, setOnUpda
                 const data = res.data;
 
                 const item = JSON.parse(localStorage.getItem("CurrentChat"));
-
+            
                 if (item.chatID === current_chat.chatID) {
                     chatDialog[chatDialog.length - 1].time = data["questionTime"];
                     chatDialog.push({
@@ -183,14 +181,27 @@ export default function ChatbotDialog({ setOnAddChatName, setChatName, setOnUpda
                         time: data["answerTime"],
                     });
                     setChatDialog([...chatDialog]);
+                    setIsWaitingAnswer(false);
                 }
-
-                // localStorage.removeItem(current_chat.chatID);
-                setIsWaitingAnswer(false);
             })
             .catch((err) => {
-                //console.log(err);
-                setIsWaitingAnswer(false);
+                console.log(err);
+                if (err.response.status === 400) {
+                    axios
+                        .post("apis/loadChat", {
+                            uid: getCurrentUser().uid,
+                            chatID: nameChatObj.chatID,
+                        })
+                        .then((res) => {
+                            //console.log(res);
+                            const data = res.data;
+                            setChatDialog(data["userChat"]);
+                        })
+                        .catch((err) => {
+                            //console.log(err);
+                        });
+                }
+                else setIsWaitingAnswer(false);
             });
     };
 
