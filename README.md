@@ -15,7 +15,7 @@ Cohere Chatbot is a chatbot app that uses Cohere’s AI platform to provide natu
 ## 4. Installation
 ### 4.1 Development
 * Run FE: `cd FE; npm i; npm start`
-* Run BE: `cd BE; python main.py`
+* Run BE: `cd BE; pip install -r requirements.txt; python main.py`
 
 ### 4.2 Deployment on Docker
 * Run: `docker compose up -d`
