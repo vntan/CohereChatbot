@@ -1,5 +1,6 @@
 __pycache__/
 
-/BE/utilities/Firebase/*.json
+utilities/Firebase/cohere_firebase_config.json
 
-/BE/utilities/*.json
+utilities/api_key.json
+utilities/model.json
