@@ -1,1 +1,5 @@
 __pycache__/
+
+/utilities/Firebase/*.json
+
+/utilities/*.json
